@@ -1,5 +1,11 @@
 import { DataSource } from 'typeorm';
-import { Migration1729998812283 } from './migrations/1729998812283-migration';
+import { Migration1732026557745 } from './migrations/1732026557745-migration';
+import { Migration1732248419082 } from './migrations/1732248419082-migration';
+import { Migration1732340897135 } from './migrations/1732340897135-migration';
+import { Migration1732608562214 } from './migrations/1732608562214-migration';
+import { Migration1732800981738 } from './migrations/1732800981738-migration';
+import { Migration1733142016366 } from './migrations/1733142016366-migration';
+import { Migration1733144312282 } from './migrations/1733144312282-migration';
 
 /**
  * TypeORM DataSource configuration for migrations.
@@ -25,7 +31,15 @@ export const datasource = new DataSource({
   //   rejectUnauthorized: false,
   // },
 
-  migrations: [],
+  migrations: [
+    Migration1732026557745,
+    Migration1732248419082,
+    Migration1732340897135,
+    Migration1732608562214,
+    Migration1732800981738,
+    Migration1733142016366,
+    Migration1733144312282
+  ],
   entities: [__dirname + '/../../**/*.entity{.ts,.js}'],
   logging: ['error', 'warn', 'info'],
 });

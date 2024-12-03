@@ -17,8 +17,14 @@ import { FirebaseUser } from '../../providers/firebase/firebase.service';
 import { FUser } from './decorator/firebase.user.decorator';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { Gender } from './entities/user.entity';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
+import { Gender, UserRole } from './entities/user.entity';
 
 @FirebaseSecure()
 @ApiTags('User Controller')
@@ -49,11 +55,21 @@ export class UserController {
     schema: {
       type: 'object',
       properties: {
-        name: { type: 'string', nullable: true },
-        birthDate: { type: 'string', format: 'date-time', nullable: true },
+        name: { type: 'string', default: null, nullable: true },
+        birthDate: {
+          type: 'string',
+          format: 'date-time',
+          default: null,
+          nullable: true,
+        },
         gender: {
           type: 'string',
           enum: Object.values(Gender),
+          nullable: true,
+        },
+        role: {
+          type: 'string',
+          enum: Object.values(UserRole),
           nullable: true,
         },
         phone: { type: 'string', nullable: true },
@@ -62,6 +78,13 @@ export class UserController {
           format: 'binary',
           nullable: true,
         },
+        categoryId: { type: 'number', default: null, nullable: true },
+        facebookProfileLink: { type: 'string', default: null, nullable: true },
+        instagramProfileLink: { type: 'string', default: null, nullable: true },
+        tiktokProfileLink: { type: 'string', default: null, nullable: true },
+        twitterProfileLink: { type: 'string', default: null, nullable: true },
+        youtubeProfileLink: { type: 'string', default: null, nullable: true },
+        linkedinProfileLink: { type: 'string', default: null, nullable: true },
       },
     },
   })

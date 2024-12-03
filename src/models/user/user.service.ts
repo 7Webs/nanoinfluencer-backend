@@ -20,6 +20,7 @@ export class UserService {
   async getProfile(fUser: FirebaseUser, token?: string) {
     const user = await User.findOne({
       where: { id: fUser.uid },
+      relations: ['owen'],
     });
 
     if (!user) return this.createUserProfile(fUser);
@@ -34,7 +35,7 @@ export class UserService {
   async getProfileById(uid: string) {
     const user = await User.findOne({
       where: { id: uid },
-      relations: ['owen', 'worksIn'],
+      relations: ['owen'],
     });
     return user;
   }
@@ -53,7 +54,7 @@ export class UserService {
 
   async updateProfile(
     fUser: FirebaseUser,
-    { name, gender, birthDate, phone }: UpdateUserDto,
+    { name, gender, birthDate, phone, role,  categoryId, facebookProfileLink, twitterProfileLink, instagramProfileLink, youtubeProfileLink, linkedinProfileLink, tiktokProfileLink  }: UpdateUserDto,
     photo?: Express.Multer.File,
   ) {
     const { uid, email } = fUser;
@@ -70,6 +71,15 @@ export class UserService {
       birthDate,
       email,
       phone,
+      role,
+      categoryId,
+      facebookProfileLink,
+      twitterProfileLink,
+      instagramProfileLink,
+      youtubeProfileLink,
+      linkedinProfileLink,
+      tiktokProfileLink
+
     });
 
     return this.getProfile(fUser);

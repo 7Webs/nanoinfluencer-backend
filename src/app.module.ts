@@ -12,6 +12,11 @@ import { AppCacheModule } from './providers/cache/app.cache.module';
 import { UserModule } from './models/user/user.module';
 import { NotificationModule } from './providers/notification/notification.module';
 import { FirebaseUserMiddlewareExtractor } from './models/user/middleware/firebaseUserMiddlewareExtractor';
+import { ShopModule } from './models/shop/shop.module';
+import { CategoryModule } from './models/category/category.module';
+import { SubscriptionsModule } from './models/subscriptions/subscriptions.module';
+import { DealsModule } from './models/deals/deals.module';
+import { DealsRedeemModule } from './models/deals-redeem/deals-redeem.module';
 
 @Module({
   imports: [
@@ -33,6 +38,11 @@ import { FirebaseUserMiddlewareExtractor } from './models/user/middleware/fireba
     AppCacheModule,
     NotificationModule,
     UserModule,
+    ShopModule,
+    CategoryModule,
+    SubscriptionsModule,
+    DealsModule,
+    DealsRedeemModule,
   ],
   controllers: [AppController],
   providers: [AppService],
