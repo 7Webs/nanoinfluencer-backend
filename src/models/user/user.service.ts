@@ -26,10 +26,10 @@ export class UserService {
       .leftJoinAndSelect('user.owen', 'owen')
       .leftJoinAndSelect('user.category', 'category')
       .leftJoinAndSelect('category.relatedCategories', 'relatedCategories')
-      .leftJoinAndSelect(
-        'user.owen.activeSubscriptionPlan',
-        'activeSubscriptionPlan',
-      )
+      // .leftJoinAndSelect(
+      //   'user.owen.activeSubscriptionPlan',
+      //   'activeSubscriptionPlan',
+      // )
       .where('user.id = :userId', { userId: fUser.uid })
       .getOne();
 
