@@ -4,7 +4,10 @@ import { User } from './entities/user.entity';
 import { FirebaseUser } from '../../providers/firebase/firebase.service';
 import { UploaderService } from '../../providers/uploader/uploader.service';
 import { NotificationService } from 'src/providers/notification/notification.service';
-import { RedeemedDeal, RedeemedDealStatus } from '../deals-redeem/entities/deals-redeem.entity';
+import {
+  RedeemedDeal,
+  RedeemedDealStatus,
+} from '../deals-redeem/entities/deals-redeem.entity';
 
 @Injectable()
 export class UserService {
@@ -23,6 +26,10 @@ export class UserService {
       .leftJoinAndSelect('user.owen', 'owen')
       .leftJoinAndSelect('user.category', 'category')
       .leftJoinAndSelect('category.relatedCategories', 'relatedCategories')
+      .leftJoinAndSelect(
+        'user.owen.activeSubscriptionPlan',
+        'activeSubscriptionPlan',
+      )
       .where('user.id = :userId', { userId: fUser.uid })
       .getOne();
 
@@ -31,7 +38,10 @@ export class UserService {
     if (token) this.updateToken(fUser.uid, token);
 
     const openRedeemedDeal = await RedeemedDeal.findOne({
-      where: { user: { id: fUser.uid }, status: RedeemedDealStatus.PENDING_USAGE },
+      where: {
+        user: { id: fUser.uid },
+        status: RedeemedDealStatus.PENDING_USAGE,
+      },
     });
 
     if (openRedeemedDeal) {
