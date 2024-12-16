@@ -1,11 +1,26 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseInterceptors,
+  UploadedFile,
+} from '@nestjs/common';
 import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { FUser } from '../user/decorator/firebase.user.decorator';
 import { FirebaseUser } from 'src/providers/firebase/firebase.service';
-import { ApiOperation, ApiConsumes, ApiBody, ApiBearerAuth } from '@nestjs/swagger';
+import {
+  ApiOperation,
+  ApiConsumes,
+  ApiBody,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import { FirebaseSecure } from '../user/decorator/firebase.secure.decorator';
 import { Public } from '../user/decorator/public.decorator';
 
@@ -25,7 +40,7 @@ export class CategoryController {
         name: { type: 'string', nullable: true },
         description: { type: 'string', nullable: true },
         parentId: { type: 'number', nullable: true },
-        relatedCategories: {
+        relatedCategoryIds: {
           type: 'array',
           items: { type: 'number' },
           nullable: true,
@@ -39,7 +54,11 @@ export class CategoryController {
     },
   })
   @UseInterceptors(FileInterceptor('image'))
-  async create(@Body() createCategoryDto: CreateCategoryDto, @UploadedFile() image: Express.Multer.File, @FUser() user: FirebaseUser) {
+  async create(
+    @Body() createCategoryDto: CreateCategoryDto,
+    @UploadedFile() image: Express.Multer.File,
+    @FUser() user: FirebaseUser,
+  ) {
     return this.categoryService.create(createCategoryDto, image, user.uid);
   }
 
@@ -65,7 +84,7 @@ export class CategoryController {
         name: { type: 'string', nullable: true },
         description: { type: 'string', nullable: true },
         parentId: { type: 'number', nullable: true },
-        relatedCategories: {
+        relatedCategoryIds: {
           type: 'array',
           items: { type: 'number' },
           nullable: true,
@@ -82,7 +101,7 @@ export class CategoryController {
     @Param('id') id: string,
     @Body() updateCategoryDto: UpdateCategoryDto,
     @UploadedFile() image: Express.Multer.File,
-    @FUser() user: FirebaseUser
+    @FUser() user: FirebaseUser,
   ) {
     return this.categoryService.update(+id, updateCategoryDto, image, user.uid);
   }
@@ -92,4 +111,3 @@ export class CategoryController {
     return this.categoryService.remove(+id, user.uid);
   }
 }
-

@@ -32,10 +32,20 @@ export class CategoryService {
       ? await this.categoryRepository.findOneBy({ id: parentId })
       : null;
 
+    let relatedCategories: Category[] = null;
+
     // Handle related categories if provided
-    const relatedCategories = relatedCategoryIds
-      ? await this.categoryRepository.findBy({ id: In(relatedCategoryIds) })
-      : [];
+    if (relatedCategoryIds) {
+      // Convert string to array of numbers if necessary
+      const categoryIds = (relatedCategoryIds as any)
+        .toString()
+        .split(',')
+        .map((id) => parseInt(id.trim(), 10));
+
+      relatedCategories = await this.categoryRepository.findBy({
+        id: In(categoryIds),
+      });
+    }
 
     // Save image file path if provided
     let imagePath: string;
@@ -96,8 +106,6 @@ export class CategoryService {
 
     // Update fields
     if (name) {
-      // const baseSlug = slugify(name);
-      // category.slug = await this.ensureUniqueSlug(baseSlug, id);
       category.name = name;
     }
     if (description) category.description = description;
@@ -109,8 +117,14 @@ export class CategoryService {
     }
 
     if (relatedCategoryIds) {
+      // Convert string to array of numbers if necessary
+      const categoryIds = (relatedCategoryIds as any)
+        .toString()
+        .split(',')
+        .map((id) => parseInt(id.trim(), 10));
+
       category.relatedCategories = await this.categoryRepository.findBy({
-        id: In(relatedCategoryIds),
+        id: In(categoryIds),
       });
     }
 

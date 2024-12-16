@@ -98,6 +98,8 @@ export class User extends BaseEntity {
   @Column({ nullable: true })
   linkedinProfileLink?: string;
 
+  openRedeemedDeal?: RedeemedDeal;
+
   @ManyToOne(() => Category, (category) => category.users, {
     nullable: true,
     eager: true, // Load category details with the shop by default

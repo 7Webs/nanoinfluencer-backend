@@ -4,10 +4,23 @@ import { Deal } from "src/models/deals/entities/deal.entity";
 import { User } from "src/models/user/entities/user.entity";
 import { BeforeInsert, BeforeUpdate, Column, Entity, ManyToOne, RelationId } from "typeorm";
 
+export enum RedeemedDealStatus {
+  PENDING_USAGE = 'pending_usage',
+  PENDING_APPROVAL = 'pending_approval',
+  RE_SUBMISSION_REQUESTED = 're_submission_requested',
+  APPROVED = 'approved',
+  REJECTED = 'rejected',
+  CANCELED = 'canceled',
+  USED = 'used',
+}
+
 @Entity()
 export class RedeemedDeal extends BaseClassEntity {
   @Column({ unique: true })
   couponCode: string;
+
+  @Column({ nullable: false, default: RedeemedDealStatus.PENDING_USAGE })
+  status: RedeemedDealStatus;
 
   @ManyToOne(() => Deal, (d) => d.redeemedDeals, { nullable: false, eager: true,  })
   deal: Deal;
@@ -16,7 +29,7 @@ export class RedeemedDeal extends BaseClassEntity {
   @RelationId((redeemedDeal: RedeemedDeal) => redeemedDeal.deal)
   dealId: number;
 
-  @ManyToOne(() => User, (user) => user.redeemedDeals, { nullable: false })
+  @ManyToOne(() => User, (user) => user.redeemedDeals, { nullable: false, eager: true })
   user: User;
 
   @Column({ nullable: false })
@@ -32,7 +45,11 @@ export class RedeemedDeal extends BaseClassEntity {
   @Column({ nullable: true })
   socialMediaLink: string;
 
-  
+  @Column({ nullable: true })
+  image: string;
+
+  @Column({ nullable: true })
+  additionalInfo: string;
 
   @Column({ nullable: true })
   approved: boolean;

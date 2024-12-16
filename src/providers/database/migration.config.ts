@@ -6,6 +6,7 @@ import { Migration1732608562214 } from './migrations/1732608562214-migration';
 import { Migration1732800981738 } from './migrations/1732800981738-migration';
 import { Migration1733142016366 } from './migrations/1733142016366-migration';
 import { Migration1733144312282 } from './migrations/1733144312282-migration';
+import { Migration1734273669304 } from './migrations/1734273669304-migration';
 
 /**
  * TypeORM DataSource configuration for migrations.
@@ -38,7 +39,8 @@ export const datasource = new DataSource({
     Migration1732608562214,
     Migration1732800981738,
     Migration1733142016366,
-    Migration1733144312282
+    Migration1733144312282,
+    Migration1734273669304,
   ],
   entities: [__dirname + '/../../**/*.entity{.ts,.js}'],
   logging: ['error', 'warn', 'info'],

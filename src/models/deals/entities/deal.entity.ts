@@ -47,7 +47,7 @@ export class Deal extends BaseClassEntity {
   })
   availableUntil: Date;
 
-  @ManyToOne(() => Shop, (s) => s.deals, { nullable: false })
+  @ManyToOne(() => Shop, (s) => s.deals, { nullable: false, eager: true })
   shop: Shop;
 
   @RelationId((deal: Deal) => deal.shop)
@@ -56,13 +56,13 @@ export class Deal extends BaseClassEntity {
   @Column({ nullable: true })
   shortTagLine: string;
 
-  @Column({ nullable: false, default: 0 })
+  @Column({ nullable: true, default: 0 })
   maxPurchaseLimit: number;
 
-  @Column({ nullable: false, default: 0 })
+  @Column({ nullable: true, default: 0 })
   maxPurchasePerUser: number;
 
-  @ManyToOne(() => Category, (c) => c.deals)
+  @ManyToOne(() => Category, (c) => c.deals, { nullable: true, eager: true })
   category: Category;
 
   @RelationId((deal: Deal) => deal.category)
