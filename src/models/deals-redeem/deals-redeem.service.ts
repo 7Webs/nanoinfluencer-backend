@@ -26,7 +26,7 @@ export class DealsRedeemService {
       where: { deal: { id: dealId }, user: { id: userId } },
     });
     const anyOpenDealBySameUser = await RedeemedDeal.find({
-      where: { user: { id: userId }, approved: null },
+      where: { user: { id: userId }, status: RedeemedDealStatus.PENDING_USAGE },
     });
 
     if (anyOpenDealBySameUser.length > 0) {
