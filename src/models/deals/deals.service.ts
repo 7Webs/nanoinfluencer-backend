@@ -145,6 +145,7 @@ export class DealsService {
       take,
       skip,
       onlyVideo,
+      categoryId
     } = pagination;
   
     const query = Deal.createQueryBuilder('deal')
@@ -165,6 +166,8 @@ export class DealsService {
     if (shop) query.andWhere('shop.name  ~* :shop', { shop });
   
     if (shopId) query.andWhere('shop.id = :shopId', { shopId });
+
+    if (categoryId) query.andWhere('shop.categoryId = :categoryId', { categoryId });
   
     if (startDate)
       query.andWhere(

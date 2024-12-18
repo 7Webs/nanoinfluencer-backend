@@ -12,7 +12,6 @@ import {
   RedeemedDeal,
   RedeemedDealStatus,
 } from './entities/deals-redeem.entity';
-import { console } from 'inspector';
 import { Pagination } from 'src/common/dtos/pagination.dto';
 
 @Injectable()

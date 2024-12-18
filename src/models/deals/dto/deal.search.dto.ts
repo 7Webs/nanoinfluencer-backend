@@ -48,6 +48,7 @@ export class DealSearchDto extends Pagination {
 
   @ApiPropertyOptional()
   @IsOptional()
-  @IsString()
-  category: string;
+  @IsNumber()
+  @Type(() => Number)
+  categoryId?: number;
 }
