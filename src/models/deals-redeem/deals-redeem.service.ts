@@ -122,13 +122,25 @@ export class DealsRedeemService {
       where: { id: id, user: { id: userId } },
     });
 
-    if (!redeemedDeal) {
+    if (!redeemedDeal || redeemedDeal.userId !== userId) {
       throw new NotFoundException('Redeem not found');
+    }
+
+    if (
+      !(redeemedDeal.status === RedeemedDealStatus.USED ||
+      redeemedDeal.status === RedeemedDealStatus.RE_SUBMISSION_REQUESTED ||
+      redeemedDeal.status === RedeemedDealStatus.REJECTED)
+    ) {
+      throw new BadRequestException(
+        'You are not allowed to request approval for this coupon.',
+      );
     }
 
     if (updateDealsRedeemDto.dealId) {
       updateDealsRedeemDto.dealId = redeemedDeal.deal.id;
     }
+
+    console.log(updateDealsRedeemDto);
 
     await RedeemedDeal.update(id, {
       ...updateDealsRedeemDto,

@@ -14,17 +14,13 @@ export class CreateDealsRedeemDto {
   @IsOptional()
   socialMediaLink: string;
 
-  @ApiPropertyOptional({ type: 'string', format: 'binary' })
-  @IsOptional()
-  image: any;
+  // @ApiPropertyOptional({ type: 'string', format: 'binary' })
+  // @IsOptional()
+  // image: any;
 
   @ApiPropertyOptional()
   @IsString()
   @IsOptional()
   additionalInfo: string;
 
-  @ApiPropertyOptional()
-  @IsString()
-  @IsOptional()
-  additionalInfoLink: string;
 }

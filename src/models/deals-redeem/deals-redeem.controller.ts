@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+} from '@nestjs/common';
 import { DealsRedeemService } from './deals-redeem.service';
 import { CreateDealsRedeemDto } from './dto/create-deals-redeem.dto';
 import { UpdateDealsRedeemDto } from './dto/update-deals-redeem.dto';
@@ -17,12 +26,18 @@ export class DealsRedeemController {
 
   @Post()
   @ApiConsumes('multipart/form-data')
-  create(@Body() createDealsRedeemDto: CreateDealsRedeemDto, @FUser() user: FirebaseUser) {
+  create(
+    @Body() createDealsRedeemDto: CreateDealsRedeemDto,
+    @FUser() user: FirebaseUser,
+  ) {
     return this.dealsRedeemService.create(createDealsRedeemDto, user.uid);
   }
 
   @Get('user')
-  findAllByUser(@FUser() user: FirebaseUser, @Query() paginationDto: Pagination) {
+  findAllByUser(
+    @FUser() user: FirebaseUser,
+    @Query() paginationDto: Pagination,
+  ) {
     return this.dealsRedeemService.findAllByUser(user.uid, paginationDto);
   }
 
@@ -32,7 +47,10 @@ export class DealsRedeemController {
   }
 
   @Get('shop')
-  findAllByShop(@FUser() user: FirebaseUser, @Query() paginationDto: Pagination) {
+  findAllByShop(
+    @FUser() user: FirebaseUser,
+    @Query() paginationDto: Pagination,
+  ) {
     return this.dealsRedeemService.findAllByShop(user.uid, paginationDto);
   }
 
@@ -42,8 +60,12 @@ export class DealsRedeemController {
   }
 
   @Patch(':id')
-  @ApiConsumes('multipart/form-data')
-  update(@Param('id') id: string, @Body() updateDealsRedeemDto: UpdateDealsRedeemDto, @FUser() user: FirebaseUser) {
+  // @ApiConsumes('multipart/form-data')
+  update(
+    @Param('id') id: string,
+    @Body() updateDealsRedeemDto: UpdateDealsRedeemDto,
+    @FUser() user: FirebaseUser,
+  ) {
     return this.dealsRedeemService.update(+id, updateDealsRedeemDto, user.uid);
   }
 
