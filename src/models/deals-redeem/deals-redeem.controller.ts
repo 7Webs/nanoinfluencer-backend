@@ -75,6 +75,13 @@ export class DealsRedeemController {
     return this.dealsRedeemService.approve(+id, user.uid, closeDealsRedeemBodyDto);
   }
 
+  @Patch('use/:couponcode')
+  use(@Param('couponcode') couponcode: string, @FUser() user: FirebaseUser) { 
+    return this.dealsRedeemService.use(couponcode, user.uid);
+  }
+  
+
+
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.dealsRedeemService.remove(+id);

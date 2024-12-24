@@ -185,4 +185,34 @@ export class DealsRedeemService {
     });
   }
 
+  async use(couponcode: string, userId: string) {
+    const redeemedDeal = await RedeemedDeal.findOne({
+      where: { couponCode: couponcode },
+    });
+
+    if (!redeemedDeal) {
+      throw new NotFoundException('Coupon not found');
+    }
+
+    if (redeemedDeal.deal.shop.ownerId !== userId) {
+      throw new NotFoundException('Coupon not found');
+    }
+
+    if (redeemedDeal.status !== RedeemedDealStatus.PENDING_USAGE) {
+      throw new BadRequestException(
+        'This coupon has already been used or expired.',
+      );
+    }
+
+    await RedeemedDeal.update(redeemedDeal.id, {
+      status: RedeemedDealStatus.USED,
+      used: true,
+      usedAt: new Date(),
+    });
+
+    return await RedeemedDeal.findOne({
+      where: { id: redeemedDeal.id },
+    });
+  }
+
 }
