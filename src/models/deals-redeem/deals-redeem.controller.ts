@@ -71,21 +71,25 @@ export class DealsRedeemController {
   }
 
   @Patch('approve/:id')
-  approve(@Param('id') id: string, @Body() closeDealsRedeemBodyDto: CloseDealsRedeemDto, @FUser() user: FirebaseUser) {
-    return this.dealsRedeemService.approve(+id, user.uid, closeDealsRedeemBodyDto);
+  approve(
+    @Param('id') id: string,
+    @Body() closeDealsRedeemBodyDto: CloseDealsRedeemDto,
+    @FUser() user: FirebaseUser,
+  ) {
+    return this.dealsRedeemService.approve(
+      +id,
+      user.uid,
+      closeDealsRedeemBodyDto,
+    );
   }
 
   @Patch('use/:couponcode')
-  use(@Param('couponcode') couponcode: string, @FUser() user: FirebaseUser) { 
+  use(@Param('couponcode') couponcode: string, @FUser() user: FirebaseUser) {
     return this.dealsRedeemService.use(couponcode, user.uid);
   }
-  
-
 
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.dealsRedeemService.remove(+id);
   }
-
-  
 }

@@ -168,7 +168,7 @@ export class DealsRedeemService {
 
     if (redeemedDeal.status !== RedeemedDealStatus.PENDING_APPROVAL) {
       throw new BadRequestException(
-        'You are not allowed to approve this coupon.',
+        `This coupon is in ${redeemedDeal.status} status. Only a submitted for approval coupon can be approved.`,
       );
     }
 
