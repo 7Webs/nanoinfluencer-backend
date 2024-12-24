@@ -13,6 +13,7 @@ import {
   RedeemedDealStatus,
 } from './entities/deals-redeem.entity';
 import { Pagination } from 'src/common/dtos/pagination.dto';
+import { CloseDealsRedeemDto } from './dto/close-redeem.dto';
 
 @Injectable()
 export class DealsRedeemService {
@@ -155,4 +156,33 @@ export class DealsRedeemService {
   remove(id: number) {
     return `This action removes a #${id} dealsRedeem`;
   }
+
+  async approve(id: number, userId: string, closeDealsRedeemBodyDto: CloseDealsRedeemDto) {
+    const redeemedDeal = await RedeemedDeal.findOne({
+      where: { id: id, user: { id: userId } },
+    });
+
+    if (!redeemedDeal) {
+      throw new NotFoundException('Redeem not found');
+    }
+
+    if (redeemedDeal.status !== RedeemedDealStatus.PENDING_APPROVAL) {
+      throw new BadRequestException(
+        'You are not allowed to approve this coupon.',
+      );
+    }
+
+    await RedeemedDeal.update(id, {
+      status: closeDealsRedeemBodyDto.status,
+      approved: closeDealsRedeemBodyDto.status === RedeemedDealStatus.APPROVED,
+      approvedAt: new Date(),
+      approvedBy: { id: userId },
+      approvedById: userId
+    });
+
+    return await RedeemedDeal.findOne({
+      where: { id: id },
+    });
+  }
+
 }

@@ -16,6 +16,7 @@ import { FirebaseSecure } from '../user/decorator/firebase.secure.decorator';
 import { FUser } from '../user/decorator/firebase.user.decorator';
 import { FirebaseUser } from 'src/providers/firebase/firebase.service';
 import { Pagination } from 'src/common/dtos/pagination.dto';
+import { CloseDealsRedeemDto } from './dto/close-redeem.dto';
 
 @Controller('deals-redeem')
 @ApiTags('deals-redeem')
@@ -69,8 +70,15 @@ export class DealsRedeemController {
     return this.dealsRedeemService.update(+id, updateDealsRedeemDto, user.uid);
   }
 
+  @Patch('approve/:id')
+  approve(@Param('id') id: string, @Body() closeDealsRedeemBodyDto: CloseDealsRedeemDto, @FUser() user: FirebaseUser) {
+    return this.dealsRedeemService.approve(+id, user.uid, closeDealsRedeemBodyDto);
+  }
+
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.dealsRedeemService.remove(+id);
   }
+
+  
 }
