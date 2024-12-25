@@ -57,6 +57,16 @@ export class AdminController {
     return this.adminService.blockSingleShop(+id, user.uid);
   }
 
+  @Get('all-used-coupons')
+  findAllUsedCoupons(@FUser() user: FirebaseUser) {
+    return this.adminService.findAllUsedCoupons(user.uid);
+  }
+
+  @Get('pending-approval-coupons')
+  findAllPendingApprovalCoupons(@FUser() user: FirebaseUser) {
+    return this.adminService.findAllPendingApprovalCoupons(user.uid);
+  }
+
   // @Get(':id')
   // findOne(@Param('id') id: string) {
   //   return this.adminService.findOne(+id);

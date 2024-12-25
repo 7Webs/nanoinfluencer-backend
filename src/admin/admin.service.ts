@@ -2,9 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { UpdateAdminDto } from './dto/update-admin.dto';
 import { UsersSearchDto } from './dto/search-users.dto';
 import { User } from 'src/models/user/entities/user.entity';
-import { FindOptionsWhere, ILike } from 'typeorm';
+import { FindOptionsWhere, ILike, Not } from 'typeorm';
 import { ShopSearchDto } from './dto/search-shops.dto';
 import { Shop } from 'src/models/shop/entities/shop.entity';
+import {
+  RedeemedDeal,
+  RedeemedDealStatus,
+} from 'src/models/deals-redeem/entities/deals-redeem.entity';
 
 @Injectable()
 export class AdminService {
@@ -140,5 +144,26 @@ export class AdminService {
     shop.approved = false;
     await shop.save();
     return shop;
+  }
+
+  async findAllUsedCoupons(userId: string) {
+    const coupons = await RedeemedDeal.find({
+      where: {
+        status: Not(RedeemedDealStatus.PENDING_USAGE),
+      },
+      order: {
+        createdAt: 'DESC', // Sort by the most recently redeemed coupons
+      },
+    });
+
+    return coupons;
+  }
+
+  async findAllPendingApprovalCoupons(userId: string) {
+    return await RedeemedDeal.find({
+      where: {
+        status: RedeemedDealStatus.PENDING_APPROVAL,
+      },
+    });
   }
 }
