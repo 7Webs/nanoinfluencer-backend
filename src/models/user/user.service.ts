@@ -4,6 +4,10 @@ import { User } from './entities/user.entity';
 import { FirebaseUser } from '../../providers/firebase/firebase.service';
 import { UploaderService } from '../../providers/uploader/uploader.service';
 import { NotificationService } from 'src/providers/notification/notification.service';
+import {
+  RedeemedDeal,
+  RedeemedDealStatus,
+} from '../deals-redeem/entities/deals-redeem.entity';
 
 @Injectable()
 export class UserService {
@@ -18,15 +22,31 @@ export class UserService {
   }
 
   async getProfile(fUser: FirebaseUser, token?: string) {
-    const user = await User.findOne({
-      where: { id: fUser.uid },
-    });
+    const user = await User.createQueryBuilder('user')
+      .leftJoinAndSelect('user.owen', 'owen')
+      .leftJoinAndSelect('user.category', 'category')
+      .leftJoinAndSelect('category.relatedCategories', 'relatedCategories')
+      // .leftJoinAndSelect(
+      //   'user.owen.activeSubscriptionPlan',
+      //   'activeSubscriptionPlan',
+      // )
+      .where('user.id = :userId', { userId: fUser.uid })
+      .getOne();
 
     if (!user) return this.createUserProfile(fUser);
 
     if (token) this.updateToken(fUser.uid, token);
 
-    // this.analyticsService.addAnalytics(user, AnalyticsType.login);
+    const openRedeemedDeal = await RedeemedDeal.findOne({
+      where: {
+        user: { id: fUser.uid },
+        status: RedeemedDealStatus.PENDING_USAGE,
+      },
+    });
+
+    if (openRedeemedDeal) {
+      user.openRedeemedDeal = openRedeemedDeal;
+    }
 
     return user;
   }
@@ -34,7 +54,7 @@ export class UserService {
   async getProfileById(uid: string) {
     const user = await User.findOne({
       where: { id: uid },
-      relations: ['owen', 'worksIn'],
+      relations: ['owen'],
     });
     return user;
   }
@@ -53,7 +73,20 @@ export class UserService {
 
   async updateProfile(
     fUser: FirebaseUser,
-    { name, gender, birthDate, phone }: UpdateUserDto,
+    {
+      name,
+      gender,
+      birthDate,
+      phone,
+      role,
+      categoryId,
+      facebookProfileLink,
+      twitterProfileLink,
+      instagramProfileLink,
+      youtubeProfileLink,
+      linkedinProfileLink,
+      tiktokProfileLink,
+    }: UpdateUserDto,
     photo?: Express.Multer.File,
   ) {
     const { uid, email } = fUser;
@@ -70,6 +103,14 @@ export class UserService {
       birthDate,
       email,
       phone,
+      role,
+      categoryId,
+      facebookProfileLink,
+      twitterProfileLink,
+      instagramProfileLink,
+      youtubeProfileLink,
+      linkedinProfileLink,
+      tiktokProfileLink,
     });
 
     return this.getProfile(fUser);

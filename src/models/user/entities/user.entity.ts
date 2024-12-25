@@ -8,13 +8,21 @@ import {
   UpdateDateColumn,
   DeleteDateColumn,
   OneToMany,
+  OneToOne,
+  ManyToOne,
+  JoinColumn,
+  RelationId,
 } from 'typeorm';
 import { Exclude } from 'class-transformer';
 import { NotificationToken } from 'src/providers/notification/entities/notificationToken.entity';
+import { Shop } from 'src/models/shop/entities/shop.entity';
+import { Category } from 'src/models/category/entities/category.entity';
+import { RedeemedDeal } from 'src/models/deals-redeem/entities/deals-redeem.entity';
 
 export enum UserRole {
   user = 'user',
   admin = 'admin',
+  shopowner = 'shopowner',
 }
 
 export enum Gender {
@@ -43,6 +51,9 @@ export class User extends BaseEntity {
   @DeleteDateColumn()
   deletedAt: Date;
 
+  @Column({default: false})
+  approved: boolean;
+
   @Column({ nullable: true })
   name: string;
 
@@ -58,10 +69,6 @@ export class User extends BaseEntity {
   @Column({ nullable: true })
   birthDate: Date;
 
-  @Exclude()
-  @Column({ nullable: true })
-  stripeId?: string;
-
   @Column({
     type: 'enum',
     enum: Gender,
@@ -69,16 +76,59 @@ export class User extends BaseEntity {
   })
   gender: Gender;
 
-  @Exclude()
   @Column({
     type: 'enum',
-    enum: ['user', 'admin'],
+    enum: ['user', 'shopowner', 'admin'],
     default: 'user',
   })
   role: UserRole;
 
+  @Column({ nullable: true })
+  facebookProfileLink?: string;
+
+  @Column({ nullable: true })
+  instagramProfileLink?: string;
+
+  @Column({ nullable: true })
+  tiktokProfileLink?: string;
+
+  @Column({ nullable: true })
+  twitterProfileLink?: string;
+
+  @Column({ nullable: true })
+  youtubeProfileLink?: string;
+
+  @Column({ nullable: true })
+  linkedinProfileLink?: string;
+
+  openRedeemedDeal?: RedeemedDeal;
+
+  @ManyToOne(() => Category, (category) => category.users, {
+    nullable: true,
+    eager: true, // Load category details with the shop by default
+  })
+  @JoinColumn()
+  category?: Category;
+
+  @RelationId((shop: Shop) => shop.category)
+  @Column({ nullable: true })
+  categoryId?: number;
+
+  @OneToOne(() => Shop, (shop) => shop.owner, { onDelete: 'CASCADE' })
+  owen: Shop;
+
   @OneToMany(() => NotificationToken, (nt) => nt.user, { onDelete: 'CASCADE' })
   notificationTokens: NotificationToken[];
+
+  @OneToMany(() => RedeemedDeal, (d) => d.user, {
+    onDelete: 'CASCADE',
+  })
+  redeemedDeals: RedeemedDeal[];
+
+  @OneToMany(() => RedeemedDeal, (d) => d.user, {
+    onDelete: 'CASCADE',
+  })
+  approvedDeals: RedeemedDeal[];
 
   toReturnJson() {
     const { id, name, email, phone, photo, role, birthDate } = this;
