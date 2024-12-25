@@ -128,9 +128,11 @@ export class DealsRedeemService {
     }
 
     if (
-      !(redeemedDeal.status === RedeemedDealStatus.USED ||
-      redeemedDeal.status === RedeemedDealStatus.RE_SUBMISSION_REQUESTED ||
-      redeemedDeal.status === RedeemedDealStatus.REJECTED)
+      !(
+        redeemedDeal.status === RedeemedDealStatus.USED ||
+        redeemedDeal.status === RedeemedDealStatus.RE_SUBMISSION_REQUESTED ||
+        redeemedDeal.status === RedeemedDealStatus.REJECTED
+      )
     ) {
       throw new BadRequestException(
         'You are not allowed to request approval for this coupon.',
@@ -157,9 +159,13 @@ export class DealsRedeemService {
     return `This action removes a #${id} dealsRedeem`;
   }
 
-  async approve(id: number, userId: string, closeDealsRedeemBodyDto: CloseDealsRedeemDto) {
+  async approve(
+    id: number,
+    userId: string,
+    closeDealsRedeemBodyDto: CloseDealsRedeemDto,
+  ) {
     const redeemedDeal = await RedeemedDeal.findOne({
-      where: { id: id, user: { id: userId } },
+      where: { id: id },
     });
 
     if (!redeemedDeal) {
@@ -177,7 +183,7 @@ export class DealsRedeemService {
       approved: closeDealsRedeemBodyDto.status === RedeemedDealStatus.APPROVED,
       approvedAt: new Date(),
       approvedBy: { id: userId },
-      approvedById: userId
+      approvedById: userId,
     });
 
     return await RedeemedDeal.findOne({
@@ -215,11 +221,9 @@ export class DealsRedeemService {
     });
   }
 
-
   async findOneByCoupon(couponcode: string) {
     return await RedeemedDeal.findOne({
       where: { couponCode: couponcode },
     });
   }
-
 }

@@ -152,7 +152,7 @@ export class AdminService {
         status: Not(RedeemedDealStatus.PENDING_USAGE),
       },
       order: {
-        createdAt: 'DESC', // Sort by the most recently redeemed coupons
+        usedAt: 'DESC', // Sort by the most recently redeemed coupons
       },
     });
 
@@ -163,6 +163,9 @@ export class AdminService {
     return await RedeemedDeal.find({
       where: {
         status: RedeemedDealStatus.PENDING_APPROVAL,
+      },
+      order: {
+        usedAt: 'ASC',
       },
     });
   }
