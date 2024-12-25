@@ -58,12 +58,16 @@ export class AdminService {
     const user = await User.findOne({ where: { id: userId } });
     user.approved = true;
     await user.save();
+
+    return user;
   }
 
   async blockSingleUser(userId: string, adminId: string) {
     const user = await User.findOne({ where: { id: userId } });
     user.approved = false;
     await user.save();
+
+    return user;
   }
 
   async findAllShops(shopSearchDto: ShopSearchDto) {
@@ -124,15 +128,17 @@ export class AdminService {
     });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} admin`;
+  async approveSingleShop(shopId: number, adminId: string) {
+    const shop = await Shop.findOne({ where: { id: shopId } });
+    shop.approved = true;
+    await shop.save();
+    return shop;
   }
 
-  update(id: number, updateAdminDto: UpdateAdminDto) {
-    return `This action updates a #${id} admin`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} admin`;
+  async blockSingleShop(shopId: number, adminId: string) {
+    const shop = await Shop.findOne({ where: { id: shopId } });
+    shop.approved = false;
+    await shop.save();
+    return shop;
   }
 }

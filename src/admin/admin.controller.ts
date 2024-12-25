@@ -22,8 +22,11 @@ export class AdminController {
   // }
 
   @Get('users')
-  findAllUsers(@Query() userSearchDto: UsersSearchDto, @FUser() user: FirebaseUser) {
-    return this.adminService.findAllUsers( userSearchDto);
+  findAllUsers(
+    @Query() userSearchDto: UsersSearchDto,
+    @FUser() user: FirebaseUser,
+  ) {
+    return this.adminService.findAllUsers(userSearchDto);
   }
 
   @Post('users/:id/approve')
@@ -37,8 +40,21 @@ export class AdminController {
   }
 
   @Get('shops')
-  findAllShops( @Query() shopSearchDto: ShopSearchDto, @FUser() user: FirebaseUser) {
+  findAllShops(
+    @Query() shopSearchDto: ShopSearchDto,
+    @FUser() user: FirebaseUser,
+  ) {
     return this.adminService.findAllShops(shopSearchDto);
+  }
+
+  @Post('shops/:id/approve')
+  approveSingleShop(@Param('id') id: number, @FUser() user: FirebaseUser) {
+    return this.adminService.approveSingleShop(+id, user.uid);
+  }
+
+  @Post('shops/:id/block')
+  blockSingleShop(@Param('id') id: number, @FUser() user: FirebaseUser) {
+    return this.adminService.blockSingleShop(+id, user.uid);
   }
 
   // @Get(':id')
