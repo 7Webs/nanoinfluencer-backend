@@ -51,6 +51,9 @@ export class User extends BaseEntity {
   @DeleteDateColumn()
   deletedAt: Date;
 
+  @Column({default: false})
+  approved: boolean;
+
   @Column({ nullable: true })
   name: string;
 

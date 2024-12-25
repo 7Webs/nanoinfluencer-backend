@@ -215,4 +215,11 @@ export class DealsRedeemService {
     });
   }
 
+
+  async findOneByCoupon(couponcode: string) {
+    return await RedeemedDeal.findOne({
+      where: { couponCode: couponcode },
+    });
+  }
+
 }

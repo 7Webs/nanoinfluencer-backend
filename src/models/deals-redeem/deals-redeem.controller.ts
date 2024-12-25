@@ -60,6 +60,11 @@ export class DealsRedeemController {
     return this.dealsRedeemService.findOne(+id);
   }
 
+  @Get('coupon/:couponcode')
+  findOneByCoupon(@Param('couponcode') couponcode: string) {
+    return this.dealsRedeemService.findOneByCoupon(couponcode);
+  }
+
   @Patch(':id')
   // @ApiConsumes('multipart/form-data')
   update(
