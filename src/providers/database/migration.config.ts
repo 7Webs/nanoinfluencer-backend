@@ -7,6 +7,7 @@ import { Migration1732800981738 } from './migrations/1732800981738-migration';
 import { Migration1733142016366 } from './migrations/1733142016366-migration';
 import { Migration1733144312282 } from './migrations/1733144312282-migration';
 import { Migration1734273669304 } from './migrations/1734273669304-migration';
+import { Migration1735125560116 } from './migrations/1735125560116-migration';
 
 /**
  * TypeORM DataSource configuration for migrations.
@@ -27,21 +28,12 @@ export const datasource = new DataSource({
   username: process.env.DB_USERNAME,
   database: process.env.DB_NAME,
   port: parseInt(process.env.DB_PORT),
-  // synchronize: false,
-  // ssl: {
-  //   rejectUnauthorized: false,
-  // },
+  synchronize: false,
+  ssl: {
+    rejectUnauthorized: false,
+  },
 
-  migrations: [
-    Migration1732026557745,
-    Migration1732248419082,
-    Migration1732340897135,
-    Migration1732608562214,
-    Migration1732800981738,
-    Migration1733142016366,
-    Migration1733144312282,
-    Migration1734273669304,
-  ],
+  migrations: [Migration1735125560116],
   entities: [__dirname + '/../../**/*.entity{.ts,.js}'],
   logging: ['error', 'warn', 'info'],
 });
