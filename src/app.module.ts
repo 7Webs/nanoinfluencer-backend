@@ -18,6 +18,7 @@ import { SubscriptionsModule } from './models/subscriptions/subscriptions.module
 import { DealsModule } from './models/deals/deals.module';
 import { DealsRedeemModule } from './models/deals-redeem/deals-redeem.module';
 import { AnalyticsModule } from './analytics/analytics.module';
+import { AdminModule } from './admin/admin.module';
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { AnalyticsModule } from './analytics/analytics.module';
     DealsModule,
     DealsRedeemModule,
     AnalyticsModule,
+    AdminModule,
   ],
   controllers: [AppController],
   providers: [AppService],
