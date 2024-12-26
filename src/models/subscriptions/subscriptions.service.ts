@@ -154,13 +154,13 @@ export class SubscriptionsService {
         );
       }
 
-      // const user = await User.findOne({
-      //   where: { id: userId },
-      // });
+      const user = await User.findOne({
+        where: { id: userId },
+      });
 
-      // if (!user ) {
-      //   throw new NotFoundException(`User with ID ${userId} not found`);
-      // }
+      if (!user) {
+        throw new NotFoundException(`User with ID ${userId} not found`);
+      }
 
       const shop = await Shop.findOne({
         where: { owner: { id: userId } },
