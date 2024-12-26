@@ -60,7 +60,7 @@ export class DealsRedeemService {
       throw new NotFoundException('Deal not found');
     }
 
-    if (!this.checkIfRedeemable(createDealsRedeemDto.dealId, userId)) {
+    if (!(await this.checkIfRedeemable(createDealsRedeemDto.dealId, userId))) {
       throw new BadRequestException('You are not allowed to redeem this deal');
     }
 
