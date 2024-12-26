@@ -158,7 +158,7 @@ export class SubscriptionsService {
         where: { id: userId },
       });
 
-      if (!user || !user.role || user.role !== UserRole.shopowner) {
+      if (!user ) {
         throw new NotFoundException(`User with ID ${userId} not found`);
       }
 

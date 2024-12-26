@@ -14,6 +14,7 @@ import { UpdateSubscriptionDto } from './dto/update-subscription.dto';
 import { FirebaseSecure } from '../user/decorator/firebase.secure.decorator';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { FUser } from '../user/decorator/firebase.user.decorator';
+import { Public } from '../user/decorator/public.decorator';
 
 @Controller('subscriptions')
 @FirebaseSecure()
@@ -56,6 +57,7 @@ export class SubscriptionsController {
   }
 
   @Get('payment-success/:checkoutsessionid')
+  @Public()
   paymentSuccess( @Param('checkoutsessionid') checkoutSessionId: string) {
     return this.subscriptionsService.paymentSuccess(checkoutSessionId);
   }
