@@ -231,14 +231,6 @@ export class SubscriptionsService {
         throw new NotFoundException(`Shop with ID ${shopId} not found`);
       }
 
-      const user = await User.findOne({
-        where: { id: shop.owner.id },
-      });
-
-      if (!user) {
-        throw new NotFoundException(`User with ID ${shop.owner.id} not found`);
-      }
-
       shop.subscriptionState = SubscriptionState.active;
       shop.activeSubscriptionPlan = subscriptionPlan;
 
