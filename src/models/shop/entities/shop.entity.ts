@@ -1,9 +1,17 @@
-import { BaseClassEntity } from "src/common/entities/base.extend-entity";
-import { Category } from "src/models/category/entities/category.entity";
-import { Deal } from "src/models/deals/entities/deal.entity";
-import { SubscriptionPlan } from "src/models/subscriptions/entities/subscription-plan.entity";
-import { User } from "src/models/user/entities/user.entity";
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, RelationId } from "typeorm";
+import { BaseClassEntity } from 'src/common/entities/base.extend-entity';
+import { Category } from 'src/models/category/entities/category.entity';
+import { Deal } from 'src/models/deals/entities/deal.entity';
+import { SubscriptionPlan } from 'src/models/subscriptions/entities/subscription-plan.entity';
+import { User } from 'src/models/user/entities/user.entity';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  OneToOne,
+  RelationId,
+} from 'typeorm';
 
 export enum SubscriptionState {
   active = 'active',
@@ -36,7 +44,7 @@ export class Shop extends BaseClassEntity {
   @Column({ nullable: true })
   address?: string;
 
-  @Column({ default: false })
+  @Column({ default: true })
   approved: boolean;
 
   @Column({ nullable: true })
