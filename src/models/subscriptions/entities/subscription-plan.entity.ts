@@ -3,8 +3,8 @@ import { Shop } from 'src/models/shop/entities/shop.entity';
 import { Column, Entity, OneToMany } from 'typeorm';
 
 export enum SubscriptionInterval {
-    MONTH = 'month',
-    YEAR = 'year',
+  MONTH = 'month',
+  YEAR = 'year',
 }
 
 @Entity('subscription_plans')
@@ -19,7 +19,7 @@ export class SubscriptionPlan extends BaseClassEntity {
   amount: number; // Price of the plan
 
   @Column()
-  currency: string; // Currency of the plan (e.g., "USD")
+  currency: string; // Currency of the plan (e.g., "ES")
 
   @Column()
   interval: SubscriptionInterval; // Billing interval (e.g., "month", "year")

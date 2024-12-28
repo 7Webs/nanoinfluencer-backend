@@ -34,7 +34,7 @@ export class SubscriptionsService {
       // Create a Stripe price
       const price = await this.stripe.prices.create({
         unit_amount: Math.round(amount * 100), // Stripe uses cents
-        currency: 'USD', // Default to USD
+        currency: 'ES', // Default to ES
         recurring: {
           interval: interval.toLowerCase() as Stripe.Price.Recurring.Interval,
         },
@@ -50,7 +50,7 @@ export class SubscriptionsService {
         stripePriceId: price.id,
         name,
         amount,
-        currency: 'USD',
+        currency: 'ES',
         interval,
         description,
         isActive: isActive || false,
