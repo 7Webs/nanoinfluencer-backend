@@ -19,7 +19,7 @@ export class SubscriptionPlan extends BaseClassEntity {
   amount: number; // Price of the plan
 
   @Column()
-  currency: string; // Currency of the plan (e.g., "ES")
+  currency: string; // Currency of the plan (e.g., "EUR")
 
   @Column()
   interval: SubscriptionInterval; // Billing interval (e.g., "month", "year")
