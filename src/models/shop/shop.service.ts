@@ -47,7 +47,7 @@ export class ShopService {
     } else {
       await this.shopRepository.save({
         ...createShopDto,
-        approved: false,
+        approved: true,
         logo: path,
         backgroundArt: backgroundArtPath,
         owner: { id: userId },
