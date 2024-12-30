@@ -20,6 +20,12 @@ export class CreateSubscriptionPlanDto {
   name: string;
 
   @ApiProperty({
+    description: 'Max no of deals c=to be created',
+  })
+  @IsNumber()
+  maxDeals: number;
+
+  @ApiProperty({
     description: 'Price of the subscription plan.',
     example: 9.99,
   })

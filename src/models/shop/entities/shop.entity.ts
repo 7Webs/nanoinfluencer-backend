@@ -53,6 +53,9 @@ export class Shop extends BaseClassEntity {
   @Column({ nullable: true })
   subscriptionEndAt?: Date;
 
+  @Column({ nullable: true })
+  lastCheckOutId?: string;
+
   @OneToMany(() => Deal, (d) => d.shop)
   deals: Deal[];
 
