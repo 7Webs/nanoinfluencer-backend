@@ -14,9 +14,11 @@ import {
 } from './entities/deals-redeem.entity';
 import { Pagination } from 'src/common/dtos/pagination.dto';
 import { CloseDealsRedeemDto } from './dto/close-redeem.dto';
+import { UploaderService } from 'src/providers/uploader/uploader.service';
 
 @Injectable()
 export class DealsRedeemService {
+  constructor(private uploader: UploaderService) {}
   async checkIfRedeemable(dealId: number, userId: string) {
     const deal = await Deal.findOne({ where: { id: dealId } });
     const alreadyRedeemedSameDeal = await RedeemedDeal.find({
@@ -118,6 +120,7 @@ export class DealsRedeemService {
     id: number,
     updateDealsRedeemDto: UpdateDealsRedeemDto,
     userId: string,
+    image: Express.Multer.File,
   ) {
     const redeemedDeal = await RedeemedDeal.findOne({
       where: { id: id, user: { id: userId } },
@@ -145,8 +148,19 @@ export class DealsRedeemService {
 
     console.log(updateDealsRedeemDto);
 
+    let imagePath: string;
+
+    if (image) {
+      imagePath = await this.uploader.uploadFile(
+        image,
+        'deal/' + redeemedDeal.id,
+      );
+      redeemedDeal.image = imagePath;
+    }
+
     await RedeemedDeal.update(id, {
       ...updateDealsRedeemDto,
+      image: imagePath,
       status: RedeemedDealStatus.PENDING_APPROVAL,
     });
 

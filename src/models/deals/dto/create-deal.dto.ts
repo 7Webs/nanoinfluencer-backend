@@ -11,7 +11,6 @@ import { Transform, Type } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { DealType } from '../entities/deal.entity';
 
-
 export class CreateDealDto {
   @ApiProperty()
   @IsString()
@@ -64,6 +63,26 @@ export class CreateDealDto {
   @IsOptional()
   @IsDecimal()
   maxPurchasePerUser: number;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsDecimal()
+  percentOff: number; // Discount percentage
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsDecimal()
+  uptoAmount: number; // Maximum discount amount
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsDecimal()
+  minSpend: number; // Minimum spend required for the deal
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsDecimal()
+  maxSpend: number; // Maximum spend allowed for the deal
 
   @ApiPropertyOptional({ type: 'string', format: 'binary' })
   @IsOptional()

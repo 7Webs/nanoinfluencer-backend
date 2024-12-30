@@ -69,9 +69,18 @@ export class Deal extends BaseClassEntity {
   @Column({ nullable: false })
   categoryId?: number;
 
-  @OneToMany(
-    () => RedeemedDeal,
-    (redeemedDeal) => redeemedDeal.deal,
-  )
+  @OneToMany(() => RedeemedDeal, (redeemedDeal) => redeemedDeal.deal)
   redeemedDeals: RedeemedDeal[];
+
+  @Column({ nullable: true, type: 'float', default: 0 })
+  percentOff: number;
+
+  @Column({ nullable: true, type: 'float', default: 0 })
+  uptoAmount: number; 
+
+  @Column({ nullable: true, type: 'float', default: 0 })
+  minSpend: number; 
+
+  @Column({ nullable: true, type: 'float', default: 0 })
+  maxSpend: number; 
 }
