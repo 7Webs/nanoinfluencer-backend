@@ -48,6 +48,10 @@ async function bootstrap() {
     .setDescription('This is swagger backend to test APIs')
     .setVersion('1.0')
     .addServer('http://localhost:3000', 'Local server')
+    .addServer(
+      'https://nano-backend-64lgb.ondigitalocean.app/',
+      'Production Server',
+    )
     .setExternalDoc('Postman Collection', '/api-json')
     .addBearerAuth()
     .build();
