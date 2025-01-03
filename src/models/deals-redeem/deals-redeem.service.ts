@@ -146,7 +146,7 @@ export class DealsRedeemService {
       updateDealsRedeemDto.dealId = redeemedDeal.deal.id;
     }
 
-    console.log(updateDealsRedeemDto);
+    // console.log(updateDealsRedeemDto);
 
     let imagePath: string;
 
@@ -155,6 +155,7 @@ export class DealsRedeemService {
         image,
         'deal/' + redeemedDeal.id,
       );
+      console.log(imagePath);
       redeemedDeal.image = imagePath;
     }
 
