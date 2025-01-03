@@ -52,7 +52,9 @@ export class AdminService {
 
     return await User.find({
       where: searchConditions.length > 0 ? searchConditions : baseWhere,
-      order: sortBy ? { [sortBy]: sortDirection || 'ASC' } : undefined,
+      order: sortBy
+        ? { [sortBy]: sortDirection || 'ASC' }
+        : { createdAt: 'DESC' },
       take: take || 10, // Default to 10 if not specified
       skip: skip || 0, // Default to 0 if not specified
     });
