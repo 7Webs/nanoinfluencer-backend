@@ -201,7 +201,7 @@ export class SubscriptionsService {
     }
   }
 
-  async paymentSuccess(checkoutSessionId: string) {
+  async paymentSuccess(checkoutSessionId: string, ) {
     try {
       // console.log(checkoutSessionId);
       const session =

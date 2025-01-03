@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   Headers,
+  Res,
 } from '@nestjs/common';
 import { SubscriptionsService } from './subscriptions.service';
 import { CreateSubscriptionPlanDto } from './dto/create-subscription-plan.dto';
@@ -58,7 +59,10 @@ export class SubscriptionsController {
 
   @Get('payment-success/:checkoutsessionid')
   @Public()
-  paymentSuccess( @Param('checkoutsessionid') checkoutSessionId: string) {
-    return this.subscriptionsService.paymentSuccess(checkoutSessionId);
+  async paymentSuccess( @Param('checkoutsessionid') checkoutSessionId: string, @Res() res) {
+    await this.subscriptionsService.paymentSuccess(checkoutSessionId);
+
+    return res.redirect('http://localhost:5174/');
+
   }
 }

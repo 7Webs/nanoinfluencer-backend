@@ -25,13 +25,13 @@ export class AdminService {
     } = userSearchDto;
 
     // Base where clause
-    const baseWhere: FindOptionsWhere<User> = {};
+    const baseWhere: FindOptionsWhere<User> = {
+      // owen: IsNull(), // Ensure only users with owenId null are fetched
+    };
 
     if (role) {
       baseWhere.role = role;
     }
-
-    baseWhere.owen = IsNull();
 
     if (approved !== undefined) {
       baseWhere.approved = approved;
