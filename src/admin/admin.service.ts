@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { UpdateAdminDto } from './dto/update-admin.dto';
 import { UsersSearchDto } from './dto/search-users.dto';
 import { User } from 'src/models/user/entities/user.entity';
-import { FindOptionsWhere, ILike, Not } from 'typeorm';
+import { FindOptionsWhere, ILike, IsNull, Not } from 'typeorm';
 import { ShopSearchDto } from './dto/search-shops.dto';
 import { Shop } from 'src/models/shop/entities/shop.entity';
 import {
@@ -30,6 +30,8 @@ export class AdminService {
     if (role) {
       baseWhere.role = role;
     }
+
+    baseWhere.owen = IsNull();
 
     if (approved !== undefined) {
       baseWhere.approved = approved;

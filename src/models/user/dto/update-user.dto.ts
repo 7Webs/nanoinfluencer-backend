@@ -38,6 +38,11 @@ export class UpdateUserDto {
   phone: string;
 
   @ApiPropertyOptional()
+  @IsString()
+  @IsOptional()
+  location: string;
+
+  @ApiPropertyOptional()
   @IsNumber()
   @IsOptional()
   @Transform(({ value }) => Number(value))

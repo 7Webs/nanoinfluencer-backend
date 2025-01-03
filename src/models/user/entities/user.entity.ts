@@ -51,7 +51,7 @@ export class User extends BaseEntity {
   @DeleteDateColumn()
   deletedAt: Date;
 
-  @Column({default: false})
+  @Column({ default: false })
   approved: boolean;
 
   @Column({ nullable: true })
@@ -62,6 +62,9 @@ export class User extends BaseEntity {
 
   @Column({ nullable: true })
   phone: string;
+
+  @Column({ nullable: true })
+  location: string;
 
   @Column({ nullable: true })
   email: string;
