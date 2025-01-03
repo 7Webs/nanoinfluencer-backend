@@ -24,6 +24,9 @@ export class ShopService {
 
     if (photo) {
       path = await this.uploader.uploadFile(photo, 'users/' + userId + '/shop');
+      if (!path) {
+        throw new Error('Failed to upload logo');
+      }
     }
 
     if (backgroundArt) {
@@ -32,6 +35,9 @@ export class ShopService {
         'users/' + userId + '/shop',
         { contentType: 'image/jpeg' },
       );
+      if (!backgroundArtPath) {
+        throw new Error('Failed to upload background art');
+      }
     }
 
     const old = await this.shopRepository.findOne({
@@ -39,11 +45,13 @@ export class ShopService {
     });
 
     if (old) {
-      await this.shopRepository.update(old.id, {
+      const updatedShop = {
+        ...old,
         ...createShopDto,
-        logo: path,
-        backgroundArt: backgroundArtPath,
-      });
+        logo: path || old.logo,
+        backgroundArt: backgroundArtPath || old.backgroundArt,
+      };
+      await this.shopRepository.save(updatedShop);
     } else {
       await this.shopRepository.save({
         ...createShopDto,
