@@ -19,7 +19,10 @@ import { FUser } from '../user/decorator/firebase.user.decorator';
 import { FirebaseUser } from 'src/providers/firebase/firebase.service';
 import { Pagination } from 'src/common/dtos/pagination.dto';
 import { CloseDealsRedeemDto } from './dto/close-redeem.dto';
-import { FileFieldsInterceptor, FileInterceptor } from '@nestjs/platform-express';
+import {
+  FileFieldsInterceptor,
+  FileInterceptor,
+} from '@nestjs/platform-express';
 
 @Controller('deals-redeem')
 @ApiTags('deals-redeem')
@@ -77,7 +80,13 @@ export class DealsRedeemController {
     @UploadedFile() image: Express.Multer.File,
     @FUser() user: FirebaseUser,
   ) {
-    return this.dealsRedeemService.update(+id, updateDealsRedeemDto, user.uid, image);
+    console.log('Uploaded File:', image); // Debug log
+    return this.dealsRedeemService.update(
+      +id,
+      updateDealsRedeemDto,
+      user.uid,
+      image,
+    );
   }
 
   @Patch('approve/:id')
