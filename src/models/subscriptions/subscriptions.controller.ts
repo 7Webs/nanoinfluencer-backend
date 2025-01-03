@@ -53,16 +53,23 @@ export class SubscriptionsController {
   }
 
   @Get('pay/:id')
-  pay(@Param('id') id: string, @Headers('host') host: string, @FUser() user: any) {
+  pay(
+    @Param('id') id: string,
+    @Headers('host') host: string,
+    @FUser() user: any,
+  ) {
     return this.subscriptionsService.pay(+id, host, user.uid);
   }
 
   @Get('payment-success/:checkoutsessionid')
   @Public()
-  async paymentSuccess( @Param('checkoutsessionid') checkoutSessionId: string, @Res() res) {
+  async paymentSuccess(
+    @Param('checkoutsessionid') checkoutSessionId: string,
+    @Res() res,
+    @Headers('origin') origin: string,
+  ) {
     await this.subscriptionsService.paymentSuccess(checkoutSessionId);
 
-    return res.redirect('http://localhost:5174/');
-
+    return res.redirect(`${origin}/profile`);
   }
 }
