@@ -88,6 +88,6 @@ export class CreateDealDto {
   @IsOptional()
   video: any;
 
-  @ApiProperty({ type: 'string', format: 'binary' })
+  @ApiProperty({ type: 'string', format: 'binary', isArray: true })
   imageFiles: any;
 }
