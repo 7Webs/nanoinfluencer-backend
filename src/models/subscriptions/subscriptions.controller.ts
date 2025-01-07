@@ -72,7 +72,7 @@ export class SubscriptionsController {
 
     console.log(origin);
 
-    return res.redirect(`https://vendor-nanoinfluencer.web.app/profile`);
+    return res.redirect(`https://vendor.nanoinfluencers.io/profile`);
   }
 
   @Public()
@@ -80,6 +80,6 @@ export class SubscriptionsController {
   async paymentFail(@Res() res, @Headers('origin') origin: string) {
     // await this.subscriptionsService.paymentSuccess(checkoutSessionId);
 
-    return res.redirect(`https://vendor-nanoinfluencer.web.app`);
+    return res.redirect(`https://vendor.nanoinfluencers.io`);
   }
 }
