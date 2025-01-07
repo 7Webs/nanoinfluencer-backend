@@ -1,8 +1,15 @@
-import { randomBytes } from "crypto";
-import { BaseClassEntity } from "src/common/entities/base.extend-entity";
-import { Deal } from "src/models/deals/entities/deal.entity";
-import { User } from "src/models/user/entities/user.entity";
-import { BeforeInsert, BeforeUpdate, Column, Entity, ManyToOne, RelationId } from "typeorm";
+import { randomBytes } from 'crypto';
+import { BaseClassEntity } from 'src/common/entities/base.extend-entity';
+import { Deal } from 'src/models/deals/entities/deal.entity';
+import { User } from 'src/models/user/entities/user.entity';
+import {
+  BeforeInsert,
+  BeforeUpdate,
+  Column,
+  Entity,
+  ManyToOne,
+  RelationId,
+} from 'typeorm';
 
 export enum RedeemedDealStatus {
   PENDING_USAGE = 'pending_usage',
@@ -22,14 +29,20 @@ export class RedeemedDeal extends BaseClassEntity {
   @Column({ nullable: false, default: RedeemedDealStatus.PENDING_USAGE })
   status: RedeemedDealStatus;
 
-  @ManyToOne(() => Deal, (d) => d.redeemedDeals, { nullable: false, eager: true,  })
+  @ManyToOne(() => Deal, (d) => d.redeemedDeals, {
+    nullable: false,
+    eager: true,
+  })
   deal: Deal;
 
   @Column({ nullable: false })
   @RelationId((redeemedDeal: RedeemedDeal) => redeemedDeal.deal)
   dealId: number;
 
-  @ManyToOne(() => User, (user) => user.redeemedDeals, { nullable: false, eager: true })
+  @ManyToOne(() => User, (user) => user.redeemedDeals, {
+    nullable: false,
+    eager: true,
+  })
   user: User;
 
   @Column({ nullable: false })
@@ -45,8 +58,8 @@ export class RedeemedDeal extends BaseClassEntity {
   @Column({ nullable: true })
   socialMediaLink: string;
 
-  @Column({ nullable: true })
-  image: string;
+  @Column({ nullable: true, type: 'simple-array' })
+  image: string[];
 
   @Column({ nullable: true })
   additionalInfo: string;
@@ -57,7 +70,10 @@ export class RedeemedDeal extends BaseClassEntity {
   @Column({ nullable: true })
   approvedAt: Date;
 
-  @ManyToOne(() => User, (user) => user.approvedDeals, { nullable: true, eager: true })
+  @ManyToOne(() => User, (user) => user.approvedDeals, {
+    nullable: true,
+    eager: true,
+  })
   approvedBy: User;
 
   @Column({ nullable: true })
@@ -84,6 +100,5 @@ export class RedeemedDeal extends BaseClassEntity {
     if (this.approvedBy && this.approvedBy.role !== 'admin') {
       throw new Error('Only admins can approve a deal');
     }
-
   }
 }

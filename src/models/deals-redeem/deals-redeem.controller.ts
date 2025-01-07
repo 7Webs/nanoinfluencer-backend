@@ -9,6 +9,7 @@ import {
   Query,
   UseInterceptors,
   UploadedFile,
+  UploadedFiles,
 } from '@nestjs/common';
 import { DealsRedeemService } from './deals-redeem.service';
 import { CreateDealsRedeemDto } from './dto/create-deals-redeem.dto';
@@ -23,6 +24,7 @@ import {
   FileFieldsInterceptor,
   FileInterceptor,
 } from '@nestjs/platform-express';
+import { dataURLtoMulterFile } from 'src/common/utils/base64handler';
 
 @Controller('deals-redeem')
 @ApiTags('deals-redeem')
@@ -73,19 +75,21 @@ export class DealsRedeemController {
 
   @Patch(':id')
   @ApiConsumes('multipart/form-data')
-  @UseInterceptors(FileInterceptor('image'))
-  update(
+  @UseInterceptors(FileFieldsInterceptor([{ name: 'image', maxCount: 10 }]))
+  async update(
     @Param('id') id: string,
     @Body() updateDealsRedeemDto: UpdateDealsRedeemDto,
-    @UploadedFile() image: Express.Multer.File,
+    @UploadedFiles()
+    files: { image: Express.Multer.File[] },
     @FUser() user: FirebaseUser,
   ) {
-    console.log('Uploaded File:', image); // Debug log
+    // console.log('Uploaded Files:', files.image);
+
     return this.dealsRedeemService.update(
       +id,
       updateDealsRedeemDto,
       user.uid,
-      image,
+      files.image,
     );
   }
 

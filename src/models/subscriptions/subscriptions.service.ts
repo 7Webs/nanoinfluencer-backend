@@ -188,6 +188,7 @@ export class SubscriptionsService {
           purchaseAt: new Date().toISOString(),
           shopId: shop.id,
         },
+        customer_email: shop.owner.email || user.email,
         mode: 'subscription',
         success_url: `https://${host}/subscriptions/payment-success/{CHECKOUT_SESSION_ID}`,
         cancel_url: `https://${host}/subscriptions/payment-failed`,
@@ -201,7 +202,7 @@ export class SubscriptionsService {
     }
   }
 
-  async paymentSuccess(checkoutSessionId: string, ) {
+  async paymentSuccess(checkoutSessionId: string) {
     try {
       // console.log(checkoutSessionId);
       const session =

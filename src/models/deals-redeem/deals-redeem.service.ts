@@ -120,7 +120,7 @@ export class DealsRedeemService {
     id: number,
     updateDealsRedeemDto: UpdateDealsRedeemDto,
     userId: string,
-    image: Express.Multer.File,
+    image: Express.Multer.File[],
   ) {
     const redeemedDeal = await RedeemedDeal.findOne({
       where: { id: id, user: { id: userId } },
@@ -129,6 +129,8 @@ export class DealsRedeemService {
     if (!redeemedDeal || redeemedDeal.userId !== userId) {
       throw new NotFoundException('Redeem not found');
     }
+
+    // console.log(updateDealsRedeemDto);
 
     if (
       !(
@@ -148,10 +150,10 @@ export class DealsRedeemService {
 
     // console.log(updateDealsRedeemDto);
 
-    let imagePath: string;
+    let imagePath: string[];
 
     if (image) {
-      imagePath = await this.uploader.uploadFile(
+      imagePath = await this.uploader.uploadFiles(
         image,
         'deal/' + redeemedDeal.id,
       );

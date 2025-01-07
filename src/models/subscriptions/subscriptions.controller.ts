@@ -61,8 +61,8 @@ export class SubscriptionsController {
     return this.subscriptionsService.pay(+id, host, user.uid);
   }
 
-  @Get('payment-success/:checkoutsessionid')
   @Public()
+  @Get('payment-success/:checkoutsessionid')
   async paymentSuccess(
     @Param('checkoutsessionid') checkoutSessionId: string,
     @Res() res,
@@ -70,6 +70,16 @@ export class SubscriptionsController {
   ) {
     await this.subscriptionsService.paymentSuccess(checkoutSessionId);
 
-    return res.redirect(`${origin}/profile`);
+    console.log(origin);
+
+    return res.redirect(`https://vendor-nanoinfluencer.web.app/profile`);
+  }
+
+  @Public()
+  @Get('payment-failed')
+  async paymentFail(@Res() res, @Headers('origin') origin: string) {
+    // await this.subscriptionsService.paymentSuccess(checkoutSessionId);
+
+    return res.redirect(`https://vendor-nanoinfluencer.web.app`);
   }
 }
