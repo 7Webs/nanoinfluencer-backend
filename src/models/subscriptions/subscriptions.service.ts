@@ -131,7 +131,7 @@ export class SubscriptionsService {
         );
       }
 
-      await SubscriptionPlan.remove(subscriptionPlan);
+      await SubscriptionPlan.softRemove(subscriptionPlan);
       return {
         message: `Subscription plan with ID ${id} removed successfully`,
       };
