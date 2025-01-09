@@ -65,6 +65,15 @@ export class RedeemedDeal extends BaseClassEntity {
   additionalInfo: string;
 
   @Column({ nullable: true })
+  totalViews: number;
+
+  @Column({ nullable: true })
+  totalLikes: number;
+
+  @Column({ nullable: true })
+  totalComments: number;
+
+  @Column({ nullable: true })
   approved: boolean;
 
   @Column({ nullable: true })

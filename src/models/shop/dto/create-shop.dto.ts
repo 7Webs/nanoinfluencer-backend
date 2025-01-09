@@ -16,8 +16,12 @@ export class CreateShopDto {
   description?: string;
 
   @ApiPropertyOptional()
-  @IsOptional({})
+  @IsOptional()
   address?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  website?: string;
 
   @ApiPropertyOptional()
   @IsOptional()

@@ -44,6 +44,9 @@ export class Shop extends BaseClassEntity {
   @Column({ nullable: true })
   address?: string;
 
+  @Column({ nullable: true })
+  website?: string;
+
   @Column({ default: true })
   approved: boolean;
 
