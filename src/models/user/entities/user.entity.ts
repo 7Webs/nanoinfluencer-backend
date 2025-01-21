@@ -86,6 +86,9 @@ export class User extends BaseEntity {
   })
   role: UserRole;
 
+  @Column({ nullable: true, type: 'enum', enum: ['pico', 'nano', 'micro'] })
+  infuencerCategory?: 'pico' | 'nano' | 'micro';
+
   @Column({ nullable: true })
   facebookProfileLink?: string;
 
