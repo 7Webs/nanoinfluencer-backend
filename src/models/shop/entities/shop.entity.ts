@@ -99,4 +99,16 @@ export class Shop extends BaseClassEntity {
   @RelationId((shop: Shop) => shop.activeSubscriptionPlan)
   @Column({ nullable: true })
   activeSubscriptionPlanId?: number; // ID of the active subscription plan
+
+  @Column({ nullable: true })
+  planActivatedAt?: Date;
+
+  @Column({ nullable: true })
+  planExpiresAt?: Date;
+
+  @Column({ nullable: true, default: 0 })
+  remainingCollabs?: number;
+
+  @Column({ nullable: true, default: 0 })
+  monthlyCollabs?: number;
 }
