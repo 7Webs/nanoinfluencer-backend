@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { MinLength } from 'class-validator';
 
 export class UpdatePasswordDto {
@@ -9,4 +9,6 @@ export class UpdatePasswordDto {
   @ApiProperty()
   @MinLength(6)
   password: string;
+
+
 }

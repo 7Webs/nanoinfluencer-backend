@@ -72,6 +72,7 @@ export class UserController {
           enum: Object.values(UserRole),
           nullable: true,
         },
+        infuencerCategory: { type: 'string', nullable: true },
         phone: { type: 'string', nullable: true },
         photo: {
           type: 'string',

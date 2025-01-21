@@ -77,5 +77,8 @@ export class UpdateUserDto {
   @IsString()
   @IsOptional()
   linkedinProfileLink?: string;
-}
 
+  @ApiPropertyOptional()
+  @IsString()
+  infuencerCategory: string;
+}

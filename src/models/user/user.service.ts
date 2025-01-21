@@ -8,6 +8,7 @@ import {
   RedeemedDeal,
   RedeemedDealStatus,
 } from '../deals-redeem/entities/deals-redeem.entity';
+import { EmailService } from 'src/providers/email/email.service';
 
 @Injectable()
 export class UserService {
@@ -15,6 +16,7 @@ export class UserService {
     // private analyticsService: AnalyticsService,
     private uploader: UploaderService,
     private notificationService: NotificationService,
+    private emailService: EmailService,
   ) {}
 
   updateToken(uid: string, token: string) {
@@ -68,6 +70,9 @@ export class UserService {
       photo: picture,
     });
 
+    await this.emailService.sendAccountPendingEmail(fUser.email, fUser.name);
+    await this.emailService.sendNewAccountNotificationToAdmin(fUser);
+
     return this.getProfile(fUser);
   }
 
@@ -87,6 +92,7 @@ export class UserService {
       youtubeProfileLink,
       linkedinProfileLink,
       tiktokProfileLink,
+      infuencerCategory,
     }: UpdateUserDto,
     photo?: Express.Multer.File,
   ) {
