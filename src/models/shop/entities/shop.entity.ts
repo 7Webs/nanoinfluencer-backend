@@ -103,9 +103,6 @@ export class Shop extends BaseClassEntity {
   @Column({ nullable: true })
   planActivatedAt?: Date;
 
-  @Column({ nullable: true })
-  planExpiresAt?: Date;
-
   @Column({ nullable: true, default: 0 })
   remainingCollabs?: number;
 

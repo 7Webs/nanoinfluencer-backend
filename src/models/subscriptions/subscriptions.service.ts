@@ -178,7 +178,7 @@ export class SubscriptionsService {
         line_items: [
           {
             price: price.id,
-            quantity: 1,
+            quantity: 12,
           },
         ],
         metadata: {
@@ -234,6 +234,12 @@ export class SubscriptionsService {
 
       shop.subscriptionState = SubscriptionState.active;
       shop.activeSubscriptionPlan = subscriptionPlan;
+      shop.planActivatedAt = new Date(purchaseAt);
+      shop.subscriptionEndAt = new Date(
+        shop.subscriptionEndAt.setFullYear(new Date().getFullYear() + 1),
+      );
+      shop.monthlyCollabs = subscriptionPlan.maxDeals;
+      shop.remainingCollabs = subscriptionPlan.maxDeals;
 
       await Shop.save(shop);
 
