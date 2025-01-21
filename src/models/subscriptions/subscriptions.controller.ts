@@ -16,6 +16,7 @@ import { FirebaseSecure } from '../user/decorator/firebase.secure.decorator';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { FUser } from '../user/decorator/firebase.user.decorator';
 import { Public } from '../user/decorator/public.decorator';
+import { ProvideSubscriptionDto } from './dto/provide-subscription.dto';
 
 @Controller('subscriptions')
 @FirebaseSecure()
@@ -61,6 +62,17 @@ export class SubscriptionsController {
     return this.subscriptionsService.pay(+id, host, user.uid);
   }
 
+  @Post('give-subscription')
+  giveSubscription(@Body() giveSubscriptionDto: ProvideSubscriptionDto) {
+    return this.subscriptionsService.giveSubscription(giveSubscriptionDto);
+    
+  }
+
+  @Post('add-collabs/:shopId/:noOfCollabs')
+  addCollabs(@Param('noOfCollabs') noOfCollabs: number, @Param('shopId') shopId: number) {
+    return this.subscriptionsService.addCollabs(noOfCollabs, shopId);
+  }
+
   @Public()
   @Get('payment-success/:checkoutsessionid')
   async paymentSuccess(
@@ -74,6 +86,7 @@ export class SubscriptionsController {
 
     return res.redirect(`https://vendor.nanoinfluencers.io/profile`);
   }
+
 
   @Public()
   @Get('payment-failed')

@@ -9,6 +9,7 @@ import Stripe from 'stripe';
 import { SubscriptionPlan } from './entities/subscription-plan.entity';
 import { User, UserRole } from '../user/entities/user.entity';
 import { Shop, SubscriptionState } from '../shop/entities/shop.entity';
+import { ProvideSubscriptionDto } from './dto/provide-subscription.dto';
 
 @Injectable()
 export class SubscriptionsService {
@@ -195,6 +196,73 @@ export class SubscriptionsService {
       });
 
       return session.url;
+    } catch (error) {
+      throw new BadRequestException(
+        `Error retrieving subscription plan: ${error.message}`,
+      );
+    }
+  }
+
+  async giveSubscription(giveSubscriptionDto: ProvideSubscriptionDto) {
+    try {
+      const subscriptionPlan = await SubscriptionPlan.findOne({
+        where: { id: giveSubscriptionDto.planId },
+      });
+
+      if (!subscriptionPlan) {
+        throw new NotFoundException(
+          `Subscription plan with ID ${giveSubscriptionDto.planId} not found`,
+        );
+      }
+
+      const shop = await Shop.findOne({
+        where: { id: giveSubscriptionDto.shopId },
+      });
+
+      if (!shop) {
+        throw new NotFoundException(
+          `Shop with ID ${giveSubscriptionDto.shopId} not found`,
+        );
+      }
+
+      shop.subscriptionState = SubscriptionState.active;
+      shop.activeSubscriptionPlan = subscriptionPlan;
+      shop.monthlyCollabs = subscriptionPlan.maxDeals;
+      shop.remainingCollabs =
+        parseInt(shop.remainingCollabs.toString()) +
+        parseInt(subscriptionPlan.maxDeals.toString());
+      shop.planActivatedAt = new Date();
+      shop.subscriptionEndAt = new Date(
+        new Date().setMonth(new Date().getMonth() + 1),
+      );
+
+      await Shop.save(shop);
+
+      return shop;
+    } catch (error) {
+      throw new BadRequestException(
+        `Error retrieving subscription plan: ${error.message}`,
+      );
+    }
+  }
+
+  async addCollabs(noOfCollabs: number, shopId: number) {
+    try {
+      const shop = await Shop.findOne({
+        where: { id: shopId },
+      });
+
+      if (!shop) {
+        throw new NotFoundException(`Shop with ID ${shopId} not found`);
+      }
+
+      shop.remainingCollabs =
+        parseInt(shop.remainingCollabs.toString()) +
+        parseInt(noOfCollabs.toString());
+
+      await Shop.save(shop);
+
+      return shop;
     } catch (error) {
       throw new BadRequestException(
         `Error retrieving subscription plan: ${error.message}`,
