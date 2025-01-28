@@ -233,7 +233,7 @@ export class SubscriptionsService {
         parseInt(subscriptionPlan.maxDeals.toString());
       shop.planActivatedAt = new Date();
       shop.subscriptionEndAt = new Date(
-        new Date().setMonth(new Date().getMonth() + 1),
+        new Date().setMonth(new Date().getMonth() + giveSubscriptionDto.months),
       );
 
       await Shop.save(shop);
