@@ -4,7 +4,7 @@ import { UpdateShopDto } from './dto/update-shop.dto';
 import { ILike, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UploaderService } from 'src/providers/uploader/uploader.service';
-import { Shop } from './entities/shop.entity';
+import { Shop, SubscriptionState } from './entities/shop.entity';
 import { UserShopSearchDto } from './dto/user-shop-search.dto';
 
 @Injectable()
@@ -58,6 +58,11 @@ export class ShopService {
         approved: true,
         logo: path,
         backgroundArt: backgroundArtPath,
+        activeSubscriptionPlan: { id: 8 },
+        remainingCollabs: 2,
+        planActivatedAt: new Date(),
+        subscriptionState: SubscriptionState.active,
+        subscriptionEndAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
         owner: { id: userId },
       });
     }
