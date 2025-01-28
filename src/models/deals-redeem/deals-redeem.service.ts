@@ -15,12 +15,16 @@ import {
 import { Pagination } from 'src/common/dtos/pagination.dto';
 import { CloseDealsRedeemDto } from './dto/close-redeem.dto';
 import { UploaderService } from 'src/providers/uploader/uploader.service';
+import { Shop } from '../shop/entities/shop.entity';
 
 @Injectable()
 export class DealsRedeemService {
   constructor(private uploader: UploaderService) {}
   async checkIfRedeemable(dealId: number, userId: string) {
     const deal = await Deal.findOne({ where: { id: dealId } });
+    if (deal.shop.remainingCollabs <= 0) {
+      return false;
+    }
     const alreadyRedeemedSameDeal = await RedeemedDeal.find({
       where: { deal: { id: dealId } },
     });
@@ -73,6 +77,9 @@ export class DealsRedeemService {
       user: { id: userId },
     });
 
+    await Shop.update(deal.shop.id, {
+      remainingCollabs: deal.shop.remainingCollabs - 1,
+    });
     // return deal;
 
     await redeemedDeal.save();
