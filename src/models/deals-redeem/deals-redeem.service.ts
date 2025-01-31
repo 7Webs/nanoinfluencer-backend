@@ -95,7 +95,6 @@ export class DealsRedeemService {
       take: paginationDto.take,
       skip: paginationDto.skip,
       order: { createdAt: 'DESC' },
-      withDeleted: true,
     });
   }
 
@@ -105,7 +104,6 @@ export class DealsRedeemService {
       take: paginationDto.take,
       skip: paginationDto.skip,
       order: { createdAt: 'DESC' },
-      withDeleted: true,
     });
 
     for (const redeem of redeems) {
