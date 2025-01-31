@@ -9,6 +9,7 @@ import {
   RedeemedDealStatus,
 } from '../deals-redeem/entities/deals-redeem.entity';
 import { EmailService } from 'src/providers/email/email.service';
+import { Deal } from '../deals/entities/deal.entity';
 
 @Injectable()
 export class UserService {
@@ -59,6 +60,16 @@ export class UserService {
       relations: ['owen'],
       withDeleted: true,
     });
+
+    if (user.redeemedDeals.length > 0) {
+      if (!user.redeemedDeals[0].deal) {
+        const deletedDeal = await Deal.findOne({
+          where: { id: user.redeemedDeals[0].dealId },
+          withDeleted: true,
+        });
+        user.redeemedDeals[0].deal = deletedDeal;
+      }
+    }
     return user;
   }
 
