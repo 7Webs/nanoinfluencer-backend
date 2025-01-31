@@ -254,7 +254,7 @@ export class DealsRedeemService {
     });
 
     if (rd) {
-      if (rd.deal) {
+      if (!rd.deal) {
         const deletedDeal = await Deal.findOne({
           where: { id: rd.dealId },
           withDeleted: true,
@@ -262,6 +262,8 @@ export class DealsRedeemService {
         rd.deal = deletedDeal;
       }
     }
+
+    return rd;
   }
 
   async getRedeemDealWithDeletedDeal(id: number) {
@@ -270,6 +272,15 @@ export class DealsRedeemService {
       relations: ['deal'],
       withDeleted: true,
     });
+    if (rd) {
+      if (!rd.deal) {
+        const deletedDeal = await Deal.findOne({
+          where: { id: rd.dealId },
+          withDeleted: true,
+        });
+        rd.deal = deletedDeal;
+      }
+    }
     return rd;
   }
 }
