@@ -45,10 +45,13 @@ export class UserService {
         user: { id: fUser.uid },
         status: RedeemedDealStatus.PENDING_USAGE,
       },
+      relations: ['deal'],
+      withDeleted: true,
     });
 
     if (openRedeemedDeal) {
       user.openRedeemedDeal = openRedeemedDeal;
+      
     }
 
     return user;
