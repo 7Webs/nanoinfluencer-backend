@@ -92,6 +92,8 @@ export class DealsRedeemService {
   async findAllByUser(userId: string, paginationDto: Pagination) {
     return await RedeemedDeal.find({
       where: { user: { id: userId } },
+      relations: ['deal'],
+      withDeleted: true,
       take: paginationDto.take,
       skip: paginationDto.skip,
       order: { createdAt: 'DESC' },
@@ -101,6 +103,8 @@ export class DealsRedeemService {
   async findAllByShop(userId: string, paginationDto: Pagination) {
     const redeems = await RedeemedDeal.find({
       where: { deal: { shop: { owner: { id: userId } } } },
+      relations: ['deal'],
+      withDeleted: true,
       take: paginationDto.take,
       skip: paginationDto.skip,
       order: { createdAt: 'DESC' },
@@ -120,6 +124,7 @@ export class DealsRedeemService {
   findOne(id: number) {
     return RedeemedDeal.findOne({
       where: { id: id },
+      relations: ['deal'],
       withDeleted: true,
     });
   }
@@ -177,6 +182,8 @@ export class DealsRedeemService {
 
     return await RedeemedDeal.findOne({
       where: { id: id },
+      relations: ['deal'],
+      withDeleted: true,
     });
   }
 
@@ -214,6 +221,8 @@ export class DealsRedeemService {
 
     return await RedeemedDeal.findOne({
       where: { id: id },
+      relations: ['deal'],
+      withDeleted: true,
     });
   }
 
@@ -244,6 +253,8 @@ export class DealsRedeemService {
 
     return await RedeemedDeal.findOne({
       where: { id: redeemedDeal.id },
+      relations: ['deal'],
+      withDeleted: true,
     });
   }
 
