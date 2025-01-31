@@ -224,9 +224,7 @@ export class DealsService {
   async remove(number: number) {
     const deal = await Deal.findOne({ where: { id: number } });
 
-    deal.availableUntil = new Date(new Date().getDate() - 1);
-
-    return await deal.save();
+    return deal.softRemove();
   }
 
   async getDealsByShop(

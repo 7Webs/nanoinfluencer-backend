@@ -155,6 +155,8 @@ export class AdminService {
       where: {
         status: Not(RedeemedDealStatus.PENDING_USAGE),
       },
+      relations: ['deal'],
+      withDeleted: true,
       order: {
         usedAt: 'DESC', // Sort by the most recently redeemed coupons
       },
@@ -168,6 +170,8 @@ export class AdminService {
       where: {
         status: RedeemedDealStatus.PENDING_APPROVAL,
       },
+      relations: ['deal'],
+      withDeleted: true,
       order: {
         usedAt: 'ASC',
       },
