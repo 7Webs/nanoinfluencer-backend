@@ -95,6 +95,7 @@ export class DealsRedeemService {
       take: paginationDto.take,
       skip: paginationDto.skip,
       order: { createdAt: 'DESC' },
+      withDeleted: true,
     });
   }
 
@@ -104,6 +105,7 @@ export class DealsRedeemService {
       take: paginationDto.take,
       skip: paginationDto.skip,
       order: { createdAt: 'DESC' },
+      withDeleted: true,
     });
 
     for (const redeem of redeems) {
@@ -120,6 +122,7 @@ export class DealsRedeemService {
   findOne(id: number) {
     return RedeemedDeal.findOne({
       where: { id: id },
+      withDeleted: true,
     });
   }
 
@@ -190,6 +193,7 @@ export class DealsRedeemService {
   ) {
     const redeemedDeal = await RedeemedDeal.findOne({
       where: { id: id },
+      withDeleted: true,
     });
 
     if (!redeemedDeal) {
@@ -248,6 +252,7 @@ export class DealsRedeemService {
   async findOneByCoupon(couponcode: string) {
     return await RedeemedDeal.findOne({
       where: { couponCode: couponcode },
+      withDeleted: true,
     });
   }
 }

@@ -57,6 +57,7 @@ export class UserService {
     const user = await User.findOne({
       where: { id: uid },
       relations: ['owen'],
+      withDeleted: true,
     });
     return user;
   }
