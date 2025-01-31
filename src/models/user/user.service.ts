@@ -61,13 +61,13 @@ export class UserService {
       withDeleted: true,
     });
 
-    if (user.redeemedDeals.length > 0) {
-      if (!user.redeemedDeals[0].deal) {
+    if (user.openRedeemedDeal) {
+      if (!user.openRedeemedDeal.deal) {
         const deletedDeal = await Deal.findOne({
-          where: { id: user.redeemedDeals[0].dealId },
+          where: { id: user.openRedeemedDeal.dealId },
           withDeleted: true,
         });
-        user.redeemedDeals[0].deal = deletedDeal;
+        user.openRedeemedDeal.deal = deletedDeal;
       }
     }
     return user;

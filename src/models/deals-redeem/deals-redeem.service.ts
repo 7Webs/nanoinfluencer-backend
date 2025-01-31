@@ -248,9 +248,28 @@ export class DealsRedeemService {
   }
 
   async findOneByCoupon(couponcode: string) {
-    return await RedeemedDeal.findOne({
+    const rd = await RedeemedDeal.findOne({
       where: { couponCode: couponcode },
       withDeleted: true,
     });
+
+    if (rd) {
+      if (rd.deal) {
+        const deletedDeal = await Deal.findOne({
+          where: { id: rd.dealId },
+          withDeleted: true,
+        });
+        rd.deal = deletedDeal;
+      }
+    }
+  }
+
+  async getRedeemDealWithDeletedDeal(id: number) {
+    const rd = await RedeemedDeal.findOne({
+      where: { id: id },
+      relations: ['deal'],
+      withDeleted: true,
+    });
+    return rd;
   }
 }
