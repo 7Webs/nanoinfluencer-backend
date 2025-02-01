@@ -24,6 +24,7 @@ export class AnalyticsService {
       .createQueryBuilder('redeemedDeal')
       .innerJoin('redeemedDeal.deal', 'deal')
       .where('deal.shopId = :shopId', { shopId })
+      .withDeleted()
       .getCount();
 
     // Deals nearing expiration for the shop (within the next 7 days)
@@ -106,7 +107,7 @@ export class AnalyticsService {
 
   async getDealAnalytics(dealId: number) {
     // Ensure the deal exists
-    const deal = await this.dealRepository.findOne({ where: { id: dealId } });
+    const deal = await this.dealRepository.findOne({ where: { id: dealId }, withDeleted: true });
     if (!deal) {
       throw new Error('Deal not found');
     }
@@ -115,6 +116,7 @@ export class AnalyticsService {
     const totalRedemptions = await this.redeemedDealRepository
       .createQueryBuilder('redeemedDeal')
       .where('redeemedDeal.dealId = :dealId', { dealId })
+      .withDeleted()
       .getCount();
 
     // Redemption status statistics for the deal
@@ -123,6 +125,7 @@ export class AnalyticsService {
       .select(['redeemedDeal.status', 'COUNT(redeemedDeal.id) AS count'])
       .where('redeemedDeal.dealId = :dealId', { dealId })
       .groupBy('redeemedDeal.status')
+      .withDeleted()
       .getRawMany();
 
     // Top users who redeemed this deal
@@ -137,6 +140,7 @@ export class AnalyticsService {
       .where('redeemedDeal.dealId = :dealId', { dealId })
       .groupBy('user.id')
       .orderBy('redeemedCount', 'DESC')
+      .withDeleted()
       .limit(5)
       .getRawMany();
 
@@ -145,6 +149,7 @@ export class AnalyticsService {
       .createQueryBuilder('redeemedDeal')
       .where('redeemedDeal.dealId = :dealId', { dealId })
       .andWhere('redeemedDeal.status = :status', { status: 'approved' })
+      .withDeleted()
       .getCount();
 
     // Daily approvals, redemptions, and usages
@@ -159,6 +164,7 @@ export class AnalyticsService {
       .where('redeemedDeal.dealId = :dealId', { dealId })
       .groupBy('DATE(redeemedDeal.createdAt)')
       .orderBy('DATE(redeemedDeal.createdAt)', 'ASC')
+      .withDeleted()
       .getRawMany();
 
     // Compile analytics for the deal
