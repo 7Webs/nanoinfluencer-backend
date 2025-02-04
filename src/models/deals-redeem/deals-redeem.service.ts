@@ -205,6 +205,8 @@ export class DealsRedeemService {
     await Shop.update(rd.deal.shop.id, {
       remainingCollabs: rd.deal.shop.remainingCollabs + 1,
     });
+
+    return rd;
   }
 
   async approve(
