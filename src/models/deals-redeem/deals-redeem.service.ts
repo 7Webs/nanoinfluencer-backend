@@ -191,6 +191,22 @@ export class DealsRedeemService {
     return `This action removes a #${id} dealsRedeem`;
   }
 
+  async cancel(id: number, userId: string) {
+    await RedeemedDeal.update(id, {
+      status: RedeemedDealStatus.CANCELED,
+    });
+
+    const rd = await RedeemedDeal.findOne({
+      where: { id: id },
+      relations: ['deal'],
+      withDeleted: true,
+    });
+
+    await Shop.update(rd.deal.shop.id, {
+      remainingCollabs: rd.deal.shop.remainingCollabs + 1,
+    });
+  }
+
   async approve(
     id: number,
     userId: string,

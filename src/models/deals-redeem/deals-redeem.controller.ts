@@ -115,4 +115,9 @@ export class DealsRedeemController {
   remove(@Param('id') id: string) {
     return this.dealsRedeemService.remove(+id);
   }
+
+  @Patch('cancel/:id')
+  cancel(@Param('id') id: string, @FUser() user: FirebaseUser) {
+    return this.dealsRedeemService.cancel(+id, user.uid);
+  }
 }
