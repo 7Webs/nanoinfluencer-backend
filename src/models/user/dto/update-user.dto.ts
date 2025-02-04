@@ -80,5 +80,6 @@ export class UpdateUserDto {
 
   @ApiPropertyOptional()
   @IsString()
+  @IsOptional()
   infuencerCategory: string;
 }
