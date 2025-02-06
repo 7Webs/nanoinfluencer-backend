@@ -72,19 +72,23 @@ export class EmailService {
 
   constructor(private configService: ConfigService) {
     this.transporter = nodemailer.createTransport({
+      name: 'nanoinfluencers.io',
       host: 'smtp.titan.email',
       secure: true,
-      secureConnection: false,
-      tls: {
-        ciphers: 'SSLv3',
-      },
-      requireTLS: true,
-      port: 465,
-      debug: true,
-      connectionTimeout: 10000,
+      // secureConnection: false,
+      // tls: {
+      //   ciphers: 'SSLv3',
+      // },
+      // requireTLS: true,
+      port: 456,
+      // debug: true,
+      // connectionTimeout: 10000,
       auth: {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASSWORD,
+      },
+      tls: {
+        rejectUnauthorized: false,
       },
     });
   }

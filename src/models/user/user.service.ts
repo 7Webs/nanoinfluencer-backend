@@ -40,6 +40,8 @@ export class UserService {
       .where('user.id = :userId', { userId: fUser.uid })
       .getOne();
 
+    // await this.emailService.sendAccountPendingEmail(fUser.email, fUser.name);
+
     if (!user) return this.createUserProfile(fUser);
 
     if (token) this.updateToken(fUser.uid, token);

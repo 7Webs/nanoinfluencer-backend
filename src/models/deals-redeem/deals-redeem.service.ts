@@ -16,6 +16,7 @@ import { Pagination } from 'src/common/dtos/pagination.dto';
 import { CloseDealsRedeemDto } from './dto/close-redeem.dto';
 import { UploaderService } from 'src/providers/uploader/uploader.service';
 import { Shop } from '../shop/entities/shop.entity';
+import { Not } from 'typeorm';
 
 @Injectable()
 export class DealsRedeemService {
@@ -26,10 +27,14 @@ export class DealsRedeemService {
       return false;
     }
     const alreadyRedeemedSameDeal = await RedeemedDeal.find({
-      where: { deal: { id: dealId } },
+      where: { deal: { id: dealId}, status: Not(RedeemedDealStatus.CANCELED) },
     });
     const alreadyRedeemedSameDealBySameUser = await RedeemedDeal.find({
-      where: { deal: { id: dealId }, user: { id: userId } },
+      where: {
+        deal: { id: dealId },
+        user: { id: userId },
+        status: Not(RedeemedDealStatus.CANCELED),
+      },
     });
     const anyOpenDealBySameUser = await RedeemedDeal.find({
       where: { user: { id: userId }, status: RedeemedDealStatus.PENDING_USAGE },
