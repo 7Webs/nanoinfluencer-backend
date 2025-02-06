@@ -88,8 +88,8 @@ export class UserService {
       photo: picture,
     });
 
-    await this.emailService.sendAccountPendingEmail(fUser.email, fUser.name);
-    await this.emailService.sendNewAccountNotificationToAdmin(fUser);
+    // await this.emailService.sendAccountPendingEmail(fUser.email, fUser.name);
+    // await this.emailService.sendNewAccountNotificationToAdmin(fUser);
 
     return this.getProfile(fUser);
   }
