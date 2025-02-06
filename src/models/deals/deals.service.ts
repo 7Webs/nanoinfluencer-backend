@@ -158,7 +158,8 @@ export class DealsService {
       //   `ts_rank(to_tsvector(deal.keywords), to_tsquery('${myKeywords}'))`,
       //   'rank'
       // )
-      .andWhere('COALESCE(deal.availableUntil > CURRENT_TIMESTAMP , true)');
+      .andWhere('COALESCE(deal.availableUntil > CURRENT_TIMESTAMP , true)')
+      .andWhere('shop.id IS NOT NULL');
 
     if (q?.length) query.andWhere('deal.title ~* :query ', { query: q });
 
