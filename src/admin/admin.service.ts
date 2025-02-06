@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { UpdateAdminDto } from './dto/update-admin.dto';
 import { UsersSearchDto } from './dto/search-users.dto';
 import { User } from 'src/models/user/entities/user.entity';
-import { FindOptionsWhere, ILike, IsNull, Not } from 'typeorm';
+import { Brackets, FindOptionsWhere, ILike, IsNull, Not } from 'typeorm';
 import { ShopSearchDto } from './dto/search-shops.dto';
 import { Shop } from 'src/models/shop/entities/shop.entity';
 import {
@@ -26,16 +26,31 @@ export class AdminService {
 
     const query = User.getRepository()
       .createQueryBuilder('user')
+      .leftJoinAndSelect('user.owen', 'shop') // Correctly join the Shop entity
       .where('user.name != :deletedUser', { deletedUser: 'Deleted User' })
-      .andWhere('user.owen IS NULL') // Ensure only users without an "owen" value are fetched
-      .andWhere(`
-      user.facebookProfileLink IS NOT NULL AND user.facebookProfileLink != '' OR
-      user.instagramProfileLink IS NOT NULL AND user.instagramProfileLink != '' OR
-      user.tiktokProfileLink IS NOT NULL AND user.tiktokProfileLink != '' OR
-      user.twitterProfileLink IS NOT NULL AND user.twitterProfileLink != '' OR
-      user.youtubeProfileLink IS NOT NULL AND user.youtubeProfileLink != '' OR
-      user.linkedinProfileLink IS NOT NULL AND user.linkedinProfileLink != ''
-    `); // Ensure at least one social profile link is present
+      .andWhere('shop.id IS NULL') // Properly check if a user has no associated shop
+      .andWhere(
+        new Brackets((qb) => {
+          qb.where(
+            "user.facebookProfileLink IS NOT NULL OR user.facebookProfileLink != ''",
+          )
+            .orWhere(
+              "user.instagramProfileLink IS NOT NULL OR user.instagramProfileLink != ''",
+            )
+            .orWhere(
+              "user.tiktokProfileLink IS NOT NULL OR user.tiktokProfileLink != ''",
+            )
+            .orWhere(
+              "user.twitterProfileLink IS NOT NULL OR user.twitterProfileLink != ''",
+            )
+            .orWhere(
+              "user.youtubeProfileLink IS NOT NULL OR user.youtubeProfileLink != ''",
+            )
+            .orWhere(
+              "user.linkedinProfileLink IS NOT NULL OR user.linkedinProfileLink != ''",
+            );
+        }),
+      );
 
     if (role) {
       query.andWhere('user.role = :role', { role });

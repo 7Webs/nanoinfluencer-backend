@@ -107,8 +107,8 @@ export class UserController {
     return this.userService.updateFirebaseToken(user, token, isShop);
   }
 
-  @Delete('/')
-  deleteProfile(@FUser('uid') uid: string) {
+  @Delete('/:uid')
+  deleteProfile(@Param('uid') uid: string) {
     return this.userService.deleteProfile(uid);
   }
 }
