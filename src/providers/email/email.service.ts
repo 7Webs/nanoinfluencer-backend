@@ -72,7 +72,7 @@ export class EmailService {
 
   constructor(private configService: ConfigService) {
     this.transporter = nodemailer.createTransport({
-      host: 'smpt.hostinger.com',
+      host: 'smtp.titan.email',
       secure: true,
       secureConnection: false,
       tls: {
@@ -83,11 +83,8 @@ export class EmailService {
       debug: true,
       connectionTimeout: 10000,
       auth: {
-        user:
-          process.env.SMTP_USER || this.configService.get<string>('SMTP_USER'),
-        pass:
-          process.env.SMTP_PASSWORD ||
-          this.configService.get<string>('SMTP_PASSWORD'),
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASSWORD,
       },
     });
   }
