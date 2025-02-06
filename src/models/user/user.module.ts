@@ -10,6 +10,7 @@ import { UserController } from './user.controller';
 import { UserService } from './user.service';
 import { CacheModule } from '@nestjs/cache-manager';
 import { EmailModule } from 'src/providers/email/email.module';
+import { FirebaseModule } from 'src/providers/firebase/firebase.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { EmailModule } from 'src/providers/email/email.module';
     // AnalyticsModule,
     EmailModule,
     UploaderModule,
+    FirebaseModule,
     TypeOrmModule.forFeature([User]),
     JwtModule.register({ secret: jwtConstants.secret }),
   ],

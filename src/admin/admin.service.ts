@@ -24,42 +24,53 @@ export class AdminService {
       skip,
     } = userSearchDto;
 
-    // Base where clause
-    const baseWhere: FindOptionsWhere<User> = {
-      // owen: IsNull(), // Ensure only users with owenId null are fetched
-    };
+    const query = User.getRepository()
+      .createQueryBuilder('user')
+      .where('user.name != :deletedUser', { deletedUser: 'Deleted User' })
+      .andWhere('user.owen IS NULL') // Ensure only users without an "owen" value are fetched
+      .andWhere(`
+      user.facebookProfileLink IS NOT NULL AND user.facebookProfileLink != '' OR
+      user.instagramProfileLink IS NOT NULL AND user.instagramProfileLink != '' OR
+      user.tiktokProfileLink IS NOT NULL AND user.tiktokProfileLink != '' OR
+      user.twitterProfileLink IS NOT NULL AND user.twitterProfileLink != '' OR
+      user.youtubeProfileLink IS NOT NULL AND user.youtubeProfileLink != '' OR
+      user.linkedinProfileLink IS NOT NULL AND user.linkedinProfileLink != ''
+    `); // Ensure at least one social profile link is present
 
     if (role) {
-      baseWhere.role = role;
+      query.andWhere('user.role = :role', { role });
     }
 
     if (approved !== undefined) {
-      baseWhere.approved = approved;
+      query.andWhere('user.approved = :approved', { approved });
     }
 
     if (gender) {
-      baseWhere.gender = gender;
+      query.andWhere('user.gender = :gender', { gender });
     }
 
-    // Dynamic search filter
-    let searchConditions: FindOptionsWhere<User>[] = [];
     if (search) {
-      const likeSearch = `%${search}%`; // Add wildcard for partial matching
-      searchConditions = [
-        { ...baseWhere, email: ILike(likeSearch) },
-        { ...baseWhere, name: ILike(likeSearch) },
-        { ...baseWhere, phone: ILike(likeSearch) },
-      ];
+      const likeSearch = `%${search}%`;
+      query.andWhere(
+        '(user.email ILIKE :search OR user.name ILIKE :search OR user.phone ILIKE :search)',
+        { search: likeSearch },
+      );
     }
 
-    return await User.find({
-      where: searchConditions.length > 0 ? searchConditions : baseWhere,
-      order: sortBy
-        ? { [sortBy]: sortDirection || 'ASC' }
-        : { createdAt: 'DESC' },
-      take: take || 10, // Default to 10 if not specified
-      skip: skip || 0, // Default to 0 if not specified
-    });
+    // Sorting
+    if (sortBy) {
+      query.orderBy(
+        `user.${sortBy}`,
+        sortDirection?.toUpperCase() === 'DESC' ? 'DESC' : 'ASC',
+      );
+    } else {
+      query.orderBy('user.createdAt', 'DESC');
+    }
+
+    // Pagination
+    query.skip(skip || 0).take(take || 10);
+
+    return await query.getMany();
   }
 
   async approveSingleUser(userId: string, adminId: string) {

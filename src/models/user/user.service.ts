@@ -1,7 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { User } from './entities/user.entity';
-import { FirebaseUser } from '../../providers/firebase/firebase.service';
+import { Gender, User } from './entities/user.entity';
+import {
+  FirebaseService,
+  FirebaseUser,
+} from '../../providers/firebase/firebase.service';
 import { UploaderService } from '../../providers/uploader/uploader.service';
 import { NotificationService } from 'src/providers/notification/notification.service';
 import {
@@ -18,6 +21,7 @@ export class UserService {
     private uploader: UploaderService,
     private notificationService: NotificationService,
     private emailService: EmailService,
+    private firebaseService: FirebaseService,
   ) {}
 
   updateToken(uid: string, token: string) {
@@ -51,7 +55,6 @@ export class UserService {
 
     if (openRedeemedDeal) {
       user.openRedeemedDeal = openRedeemedDeal;
-      
     }
 
     return user;
@@ -140,7 +143,28 @@ export class UserService {
   }
 
   async deleteProfile(uid: string) {
-    await User.getRepository().softRemove({ id: uid });
+    const user = await User.findOne({ where: { id: uid } });
+
+    user.name = 'Deleted User';
+    user.email = 'deleteduser@nanoinfluencers.io';
+    user.birthDate = null;
+    user.gender = Gender.preferNotToSay;
+    user.photo = null;
+    user.phone = null;
+
+    user.facebookProfileLink = null;
+    user.twitterProfileLink = null;
+    user.instagramProfileLink = null;
+    user.youtubeProfileLink = null;
+    user.linkedinProfileLink = null;
+    user.tiktokProfileLink = null;
+
+    await User.save(user);
+
+    // Delete User From Firebase
+    await this.firebaseService.deleteUserFromFirebase(uid);
+
+    return user;
   }
 
   async updateFirebaseToken(

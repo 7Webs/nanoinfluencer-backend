@@ -61,6 +61,15 @@ export class FirebaseService {
     }
   }
 
+  async deleteUserFromFirebase(id: string) {
+    try {
+      await this.auth.deleteUser(id);
+    } catch (e) {
+      console.error(e);
+      throw e;
+    }
+  }
+
   async transformUserRecordToTokenFormat(
     userRecord: UserRecord,
   ): Promise<DecodedIdToken> {
