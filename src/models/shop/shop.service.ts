@@ -132,8 +132,8 @@ export class ShopService {
     return { shop };
   }
 
-  remove(id: number) {
-    const shop = this.shopRepository.delete(id);
+  async remove(id: number) {
+    const shop = await this.shopRepository.delete(id);
     return shop;
   }
 }
