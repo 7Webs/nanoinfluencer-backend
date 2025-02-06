@@ -133,6 +133,7 @@ export class ShopService {
   }
 
   remove(id: number) {
-    return `This action removes a #${id} shop`;
+    const shop = this.shopRepository.delete(id);
+    return shop;
   }
 }
