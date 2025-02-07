@@ -9,9 +9,13 @@ import {
   RedeemedDeal,
   RedeemedDealStatus,
 } from 'src/models/deals-redeem/entities/deals-redeem.entity';
+import { EmailService } from 'src/providers/email/email.service';
 
 @Injectable()
 export class AdminService {
+  constructor(
+    private emailService: EmailService,
+  ) {}
   async findAllUsers(userSearchDto: UsersSearchDto) {
     const {
       search,
@@ -93,6 +97,7 @@ export class AdminService {
     user.approved = true;
     await user.save();
 
+    await this.emailService.sendAccountApprovedEmail(user.email, user.name ?? user.email);
     return user;
   }
 
@@ -166,6 +171,7 @@ export class AdminService {
     const shop = await Shop.findOne({ where: { id: shopId } });
     shop.approved = true;
     await shop.save();
+
     return shop;
   }
 

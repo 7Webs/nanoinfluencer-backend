@@ -133,7 +133,11 @@ export class ShopService {
   }
 
   async remove(id: number) {
-    const shop = await this.shopRepository.delete(id);
+    const shop = await this.shopRepository.findOne({
+      where: { id },
+    });
+
+    await this.shopRepository.softRemove(shop);
     return shop;
   }
 }
