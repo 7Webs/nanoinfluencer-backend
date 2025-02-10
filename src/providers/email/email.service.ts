@@ -189,7 +189,7 @@ export class EmailService {
         <p>Hello ${customerName},</p>
         <p>Your recent submission for the coupon has got an update. The status of your deal is now ${status}.</p>
         <div class="details">
-          <p> To manage you coupons visit <a href="https://app.nanoinfluencers.io/redeemed-deals">Your Coupons</a> </p>
+          <p> To manage you coupons visit <a href="https://app.nanoinfluencers.io/redeemed-coupons">Your Coupons</a> </p>
         </div>
         <p>You can review all your recent coupons anytime from your Dashboard.</p>
         <p>If anything looks incorrect or you have questions, we're always here to help.</p>
