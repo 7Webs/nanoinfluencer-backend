@@ -91,9 +91,7 @@ export class EmailService {
         </head>
         <body>
           <div class="email-container">
-            <div class="header">
-              <img src="https://app.nanoinfluencers.io/assets/logo-BeuxdvfE.png alt="Nanoinfluencer Logo" class="logo">
-            </div>
+            
             ${content}
             <div class="footer">
               <p>© ${new Date().getFullYear()} NanoInfluencers®. All rights reserved.</p>
@@ -104,6 +102,9 @@ export class EmailService {
     `;
   }
 
+  // <div class="header">
+  //             <img src="https://app.nanoinfluencers.io/assets/logo-BeuxdvfE.png alt="Nanoinfluencer Logo" class="logo">
+  //           </div>
   async sendEmail({ to, cc, subject, html }: EmailOptions) {
     try {
       const mailOptions: nodemailer.SendMailOptions = {
