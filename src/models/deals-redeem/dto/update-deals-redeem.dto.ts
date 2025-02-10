@@ -18,4 +18,9 @@ export class UpdateDealsRedeemDto extends PartialType(CreateDealsRedeemDto) {
   @IsNumber()
   @Transform(({ value }) => Number(value))
   totalComments: number;
+
+  @ApiPropertyOptional()
+  @IsNumber()
+  @Transform(({ value }) => Number(value))
+  amountSpent: number;
 }
