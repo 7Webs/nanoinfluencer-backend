@@ -17,17 +17,21 @@ import { CloseDealsRedeemDto } from './dto/close-redeem.dto';
 import { UploaderService } from 'src/providers/uploader/uploader.service';
 import { Shop } from '../shop/entities/shop.entity';
 import { Not } from 'typeorm';
+import { EmailService } from 'src/providers/email/email.service';
 
 @Injectable()
 export class DealsRedeemService {
-  constructor(private uploader: UploaderService) {}
+  constructor(
+    private uploader: UploaderService,
+    private emailService: EmailService,
+  ) {}
   async checkIfRedeemable(dealId: number, userId: string) {
     const deal = await Deal.findOne({ where: { id: dealId } });
     if (deal.shop.remainingCollabs <= 0) {
       return false;
     }
     const alreadyRedeemedSameDeal = await RedeemedDeal.find({
-      where: { deal: { id: dealId}, status: Not(RedeemedDealStatus.CANCELED) },
+      where: { deal: { id: dealId }, status: Not(RedeemedDealStatus.CANCELED) },
     });
     const alreadyRedeemedSameDealBySameUser = await RedeemedDeal.find({
       where: {
@@ -241,6 +245,12 @@ export class DealsRedeemService {
       approvedBy: { id: userId },
       approvedById: userId,
     });
+
+    await this.emailService.sendDealUpdateEmail(
+      redeemedDeal.user.email,
+      redeemedDeal.user.name,
+      closeDealsRedeemBodyDto.status,
+    );
 
     return await RedeemedDeal.findOne({
       where: { id: id },

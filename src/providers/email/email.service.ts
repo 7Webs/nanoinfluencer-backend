@@ -180,23 +180,17 @@ export class EmailService {
   }
 
   // Wallet Emails
-  async sendWalletUpdateEmail(
-    to: string,
-    customerName: string,
-    amount: number,
-  ) {
+  async sendDealUpdateEmail(to: string, customerName: string, status: string) {
     return this.sendEmail({
       to,
-      subject: 'Your Nanoinfluencers.io Wallet Has Been Updated',
+      subject: 'Your Nanoinfluencers.io Coupon Has got an Update',
       html: `
         <p>Hello ${customerName},</p>
-        <p>Great news! Your Nanoinfluencers.io wallet was just Credited with ${amount}.</p>
+        <p>Your recent submission for the coupon has got an update. The status of your deal is now ${status}.</p>
         <div class="details">
-          <h2>Transaction details:</h2>
-          <p>Type: Credit</p>
-          <p>Amount: ${amount}</p>
+          <p> To manage you coupons visit <a href="https://app.nanoinfluencers.io/redeemed-deals">Your Coupons</a> </p>
         </div>
-        <p>You can review your full transaction history and wallet balance anytime from your Dashboard.</p>
+        <p>You can review all your recent coupons anytime from your Dashboard.</p>
         <p>If anything looks incorrect or you have questions, we're always here to help.</p>
         <p>Cheers,</p>
         <p>The Nanoinfluencers.io Team</p>
