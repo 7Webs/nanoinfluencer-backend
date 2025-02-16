@@ -41,6 +41,9 @@ export class Deal extends BaseClassEntity {
   @Column()
   keywords: string;
 
+  @Column({ nullable: true })
+  influencerRequirements: string;
+
   @Column({
     type: 'date',
     nullable: true,

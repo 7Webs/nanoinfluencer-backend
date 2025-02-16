@@ -84,6 +84,11 @@ export class CreateDealDto {
   @IsDecimal()
   maxSpend: number; // Maximum spend allowed for the deal
 
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  influencerRequirements: string;
+
   @ApiPropertyOptional({ type: 'string', format: 'binary' })
   @IsOptional()
   video: any;
