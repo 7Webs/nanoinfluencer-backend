@@ -16,7 +16,7 @@ import { Pagination } from 'src/common/dtos/pagination.dto';
 import { CloseDealsRedeemDto } from './dto/close-redeem.dto';
 import { UploaderService } from 'src/providers/uploader/uploader.service';
 import { Shop } from '../shop/entities/shop.entity';
-import { Not } from 'typeorm';
+import { In, Not } from 'typeorm';
 import { EmailService } from 'src/providers/email/email.service';
 
 @Injectable()
@@ -41,18 +41,23 @@ export class DealsRedeemService {
       },
     });
     const anyOpenDealBySameUser = await RedeemedDeal.find({
-      where: { user: { id: userId }, status: RedeemedDealStatus.PENDING_USAGE },
+      where: {
+        user: { id: userId },
+        status: Not(
+          In([RedeemedDealStatus.CANCELED, RedeemedDealStatus.APPROVED]),
+        ),
+      },
     });
 
     if (anyOpenDealBySameUser.length > 0) {
-      return false;
+      return 'You already have an open deal. Please use that or cancel it first.';
     } else if (
       alreadyRedeemedSameDealBySameUser.length < deal.maxPurchasePerUser &&
       alreadyRedeemedSameDeal.length < deal.maxPurchaseLimit
     ) {
-      return true;
+      return 'true';
     } else {
-      return false;
+      return 'Limit to redeem this deal has been reached.';
     }
   }
 
@@ -69,17 +74,22 @@ export class DealsRedeemService {
       where: { id: createDealsRedeemDto.dealId },
     });
 
-    Logger.log(createDealsRedeemDto.dealId);
+    // Logger.log(createDealsRedeemDto.dealId);
 
     if (!deal) {
       throw new NotFoundException('Deal not found');
     }
-
-    if (!(await this.checkIfRedeemable(createDealsRedeemDto.dealId, userId))) {
-      throw new BadRequestException('You are not allowed to redeem this deal');
+    const redeemable = await this.checkIfRedeemable(
+      createDealsRedeemDto.dealId,
+      userId,
+    );
+    if (!(redeemable === 'true')) {
+      throw new BadRequestException(
+        redeemable || 'You are not allowed to redeem this deal',
+      );
     }
 
-    Logger.log(createDealsRedeemDto);
+    // Logger.log(createDealsRedeemDto);
 
     const redeemedDeal = await RedeemedDeal.create({
       dealId: deal.id,
