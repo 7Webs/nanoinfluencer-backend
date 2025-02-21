@@ -23,4 +23,8 @@ export class CreateDealsRedeemDto {
   @IsOptional()
   additionalInfo: string;
 
+  @ApiPropertyOptional()
+  @IsString()
+  @IsOptional()
+  adminComment: string;
 }
