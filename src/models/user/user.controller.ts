@@ -107,6 +107,14 @@ export class UserController {
     return this.userService.updateFirebaseToken(user, token, isShop);
   }
 
+  @Patch('/influencertype/:id/:type')
+  updateInfluencerType(
+    @Param('id') id: string,
+    @Param('type') type: 'pico' | 'nano' | 'micro',
+  ) {
+    return this.userService.updateInfluencerType(id, type);
+  }
+
   @Delete('/:uid')
   deleteProfile(@Param('uid') uid: string) {
     return this.userService.deleteProfile(uid);

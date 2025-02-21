@@ -180,4 +180,9 @@ export class UserService {
     await this.notificationService.updateToken(user.uid, token, isShop);
     return { done: true };
   }
+
+  async updateInfluencerType(id: string, type: 'pico' | 'nano' | 'micro') {
+    await User.update(id, { infuencerCategory: type });
+    return { done: true };
+  }
 }
