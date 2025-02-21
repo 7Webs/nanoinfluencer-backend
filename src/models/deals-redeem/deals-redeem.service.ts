@@ -250,6 +250,7 @@ export class DealsRedeemService {
 
     await RedeemedDeal.update(id, {
       status: closeDealsRedeemBodyDto.status,
+      adminComment: closeDealsRedeemBodyDto.adminComment,
       approved: closeDealsRedeemBodyDto.status === RedeemedDealStatus.APPROVED,
       approvedAt: new Date(),
       approvedBy: { id: userId },

@@ -8,4 +8,9 @@ export class CloseDealsRedeemDto {
   @IsNotEmpty()
   @IsEnum(RedeemedDealStatus)
   status: RedeemedDealStatus;
+
+  @ApiPropertyOptional()
+  @IsString()
+  @IsOptional()
+  adminComment: string;
 }
