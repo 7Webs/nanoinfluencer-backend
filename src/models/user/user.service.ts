@@ -138,10 +138,10 @@ export class UserService {
       categoryId,
       facebookProfileLink,
       twitterProfileLink,
-      instagramProfileLink,
+      instagramProfileLink: this.getValidInstagramURL(instagramProfileLink),
       youtubeProfileLink,
       linkedinProfileLink,
-      tiktokProfileLink,
+      tiktokProfileLink: this.getValidTiktokURL(tiktokProfileLink),
     });
 
     return this.getProfile(fUser);
@@ -185,4 +185,33 @@ export class UserService {
     await User.update(id, { infuencerCategory: type });
     return { done: true };
   }
+
+  // Function to process Instagram links
+  getValidInstagramURL = (input) => {
+    if (!input) return ''; // Handle empty input
+
+    input = input.trim().replace(/^@/, ''); // Remove leading @ if present
+    let regex =
+      /(?:https?:\/\/)?(?:www\.)?instagram\.com\/([a-zA-Z0-9_.-]+)\/?/;
+    let match = input.match(regex);
+    let username = match ? match[1] : input;
+
+    return /^[a-zA-Z0-9_.-]+$/.test(username)
+      ? `https://www.instagram.com/${username}`
+      : '';
+  };
+
+  // Function to process TikTok links
+  getValidTiktokURL = (input) => {
+    if (!input) return ''; // Handle empty input
+
+    input = input.trim().replace(/^@/, ''); // Remove leading @ if present
+    let regex = /(?:https?:\/\/)?(?:www\.)?tiktok\.com\/(@?[a-zA-Z0-9_.-]+)\/?/;
+    let match = input.match(regex);
+    let username = match ? match[1].replace(/^@/, '') : input; // Remove @ if extracted
+
+    return /^[a-zA-Z0-9_.-]+$/.test(username)
+      ? `https://www.tiktok.com/@${username}`
+      : '';
+  };
 }

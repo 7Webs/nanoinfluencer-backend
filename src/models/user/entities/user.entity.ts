@@ -182,7 +182,7 @@ const getValidInstagramURL = (input) => {
   let username = match ? match[1] : input;
 
   return /^[a-zA-Z0-9_.-]+$/.test(username)
-    ? `https://www.instagram.com/${username}/`
+    ? `https://www.instagram.com/${username}`
     : '';
 };
 
