@@ -79,7 +79,7 @@ export class UpdateUserDto {
   linkedinProfileLink?: string;
 
   @ApiPropertyOptional()
-  @IsEnum(['infuencer', 'brand', 'both'])
+  @IsEnum(['pico', 'nano', 'micro'])
   @IsOptional()
-  infuencerCategory: 'infuencer' | 'brand' | 'both';
+  infuencerCategory: 'pico' | 'nano' | 'micro';
 }
