@@ -79,7 +79,7 @@ export class UpdateUserDto {
   linkedinProfileLink?: string;
 
   @ApiPropertyOptional()
-  @IsString()
+  @IsEnum(['infuencer', 'brand', 'both'])
   @IsOptional()
-  infuencerCategory: string;
+  infuencerCategory: 'infuencer' | 'brand' | 'both';
 }

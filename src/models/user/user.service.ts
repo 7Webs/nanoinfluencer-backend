@@ -121,6 +121,8 @@ export class UserService {
   ) {
     const { uid, email } = fUser;
 
+    const user = await User.findOne({ where: { id: uid } });
+
     let path: string;
     if (photo) {
       path = await this.uploader.uploadFile(photo, 'users/' + uid);
@@ -136,12 +138,13 @@ export class UserService {
       location,
       role,
       categoryId,
+      infuencerCategory,
       facebookProfileLink,
       twitterProfileLink,
-      instagramProfileLink: this.getValidInstagramURL(instagramProfileLink),
+      instagramProfileLink: instagramProfileLink ? this.getValidInstagramURL(instagramProfileLink): user.instagramProfileLink,
       youtubeProfileLink,
       linkedinProfileLink,
-      tiktokProfileLink: this.getValidTiktokURL(tiktokProfileLink),
+      tiktokProfileLink: tiktokProfileLink ? this.getValidTiktokURL(tiktokProfileLink): user.tiktokProfileLink,
     });
 
     return this.getProfile(fUser);
