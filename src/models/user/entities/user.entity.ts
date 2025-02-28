@@ -12,6 +12,8 @@ import {
   ManyToOne,
   JoinColumn,
   RelationId,
+  BeforeInsert,
+  BeforeUpdate,
 } from 'typeorm';
 import { Exclude } from 'class-transformer';
 import { NotificationToken } from 'src/providers/notification/entities/notificationToken.entity';
@@ -136,6 +138,19 @@ export class User extends BaseEntity {
   })
   approvedDeals: RedeemedDeal[];
 
+  @BeforeInsert()
+  @BeforeUpdate()
+  validateSocialMediaLinks() {
+    if (this.instagramProfileLink) {
+      this.instagramProfileLink = getValidInstagramURL(
+        this.instagramProfileLink,
+      );
+    }
+    if (this.tiktokProfileLink) {
+      this.tiktokProfileLink = getValidTiktokURL(this.tiktokProfileLink);
+    }
+  }
+
   toReturnJson() {
     const { id, name, email, phone, photo, role, birthDate } = this;
 
@@ -153,3 +168,31 @@ export class User extends BaseEntity {
     };
   }
 }
+
+// Function to process Instagram links
+const getValidInstagramURL = (input) => {
+  if (!input) return ''; // Handle empty input
+
+  input = input.trim().replace(/^@/, ''); // Remove leading @ if present
+  let regex = /(?:https?:\/\/)?(?:www\.)?instagram\.com\/([a-zA-Z0-9_.-]+)\/?/;
+  let match = input.match(regex);
+  let username = match ? match[1] : input;
+
+  return /^[a-zA-Z0-9_.-]+$/.test(username)
+    ? `https://www.instagram.com/${username}/`
+    : '';
+};
+
+// Function to process TikTok links
+const getValidTiktokURL = (input) => {
+  if (!input) return ''; // Handle empty input
+
+  input = input.trim().replace(/^@/, ''); // Remove leading @ if present
+  let regex = /(?:https?:\/\/)?(?:www\.)?tiktok\.com\/(@?[a-zA-Z0-9_.-]+)\/?/;
+  let match = input.match(regex);
+  let username = match ? match[1].replace(/^@/, '') : input; // Remove @ if extracted
+
+  return /^[a-zA-Z0-9_.-]+$/.test(username)
+    ? `https://www.tiktok.com/@${username}`
+    : '';
+};
