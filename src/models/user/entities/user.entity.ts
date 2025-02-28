@@ -14,6 +14,7 @@ import {
   RelationId,
   BeforeInsert,
   BeforeUpdate,
+  AfterUpdate,
 } from 'typeorm';
 import { Exclude } from 'class-transformer';
 import { NotificationToken } from 'src/providers/notification/entities/notificationToken.entity';
@@ -140,11 +141,13 @@ export class User extends BaseEntity {
 
   @BeforeInsert()
   @BeforeUpdate()
+  @AfterUpdate()
   validateSocialMediaLinks() {
     if (this.instagramProfileLink) {
       this.instagramProfileLink = getValidInstagramURL(
         this.instagramProfileLink,
       );
+      console.log(this.instagramProfileLink);
     }
     if (this.tiktokProfileLink) {
       this.tiktokProfileLink = getValidTiktokURL(this.tiktokProfileLink);
