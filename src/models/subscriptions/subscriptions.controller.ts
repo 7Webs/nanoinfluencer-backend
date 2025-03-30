@@ -106,6 +106,13 @@ export class SubscriptionsController {
     return this.subscriptionsService.webhook(req.rawBody, stripeSignature);
   }
 
+  @Public()
+  @ApiExcludeEndpoint()
+  @Post('test-webhook')
+  testWebhook(@Req() req, @Headers('stripe-signature') stripeSignature) {
+    return this.subscriptionsService.testWebhook(req.rawBody, stripeSignature);
+  }
+
   @Post('sync-subscription')
   syncSubscription(@FUser() user: FirebaseUser) {
     return this.subscriptionsService.syncMySubscription(user?.uid);

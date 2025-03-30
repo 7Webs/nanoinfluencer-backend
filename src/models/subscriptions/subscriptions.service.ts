@@ -372,7 +372,7 @@ export class SubscriptionsService {
 
     await Shop.update(
       { owner: { id: user.id } },
-      { subscriptionState: status, },
+      { subscriptionState: status },
     );
   }
 
@@ -389,7 +389,19 @@ export class SubscriptionsService {
       this.syncSubscription(data);
     }
   }
+  async testWebhook(body: string, stripeSignature: any) {
+    const event = await this.stripe.webhooks.constructEventAsync(
+      body,
+      stripeSignature,
+      process.env.STRIPE_TEST_WEBHOOK_SECRET,
+    );
 
+    const data = event.data.object as any;
+
+    if (event.type.match(/customer\.subscription.*/)) {
+      this.syncSubscription(data);
+    }
+  }
   async getMySubscription(userId: string) {
     const user = await User.findOne({ where: { id: userId } });
     const customer = await this.setupCustomer(user);
