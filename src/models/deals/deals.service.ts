@@ -15,6 +15,11 @@ import { Brackets, EntityManager } from 'typeorm';
 import { InjectEntityManager } from '@nestjs/typeorm';
 import { AdminDealSearchDto } from './dto/AdminSearchDeal.dto';
 import { Pagination } from 'src/common/dtos/pagination.dto';
+import {
+  DealAnalytics,
+  DealAnalyticsType,
+} from './entities/deal-analytics.entity';
+import { TrackAnalyticsDto } from './dto/track-analytics.dto';
 
 @Injectable()
 export class DealsService {
@@ -192,6 +197,15 @@ export class DealsService {
 
     const deals = await query.getMany();
 
+    for (const deal of deals) {
+      await this.trackAnalytics(
+        deal.id,
+        {
+          type: DealAnalyticsType.VIEW,
+        },
+        userId,
+      );
+    }
     return deals;
   }
 
@@ -269,5 +283,72 @@ export class DealsService {
     const deals = await queryBuilder.getMany();
 
     return deals;
+  }
+
+  async trackAnalytics(
+    dealId: number,
+    trackAnalyticsDto: TrackAnalyticsDto,
+    userId: string,
+  ) {
+    const deal = await Deal.findOne({ where: { id: dealId } });
+    if (!deal) {
+      throw new HttpException('Deal not found', HttpStatus.NOT_FOUND);
+    }
+
+    const analytics = new DealAnalytics();
+    analytics.deal = deal;
+    analytics.user = { id: userId } as User;
+    analytics.type = trackAnalyticsDto.type;
+    analytics.amount = trackAnalyticsDto.amount;
+    analytics.metadata = trackAnalyticsDto.metadata;
+
+    await analytics.save();
+
+    return analytics;
+  }
+
+  async getDealAnalytics(dealId: number) {
+    const deal = await Deal.findOne({ where: { id: dealId } });
+    if (!deal) {
+      throw new HttpException('Deal not found', HttpStatus.NOT_FOUND);
+    }
+
+    const analytics = await DealAnalytics.createQueryBuilder('analytics')
+      .where('analytics.dealId = :dealId', { dealId })
+      .select([
+        'analytics.type',
+        'COUNT(*) as count',
+        'SUM(analytics.amount) as totalAmount',
+      ])
+      .groupBy('analytics.type')
+      .getRawMany();
+
+    const summary = {
+      views: 0,
+      opens: 0,
+      shares: 0,
+      totalMoneySpent: 0,
+    };
+
+    // console.log(analytics);
+
+    analytics.forEach((item) => {
+      switch (item.analytics_type) {
+        case DealAnalyticsType.VIEW:
+          summary.views = parseInt(item.count);
+          break;
+        case DealAnalyticsType.OPEN:
+          summary.opens = parseInt(item.count);
+          break;
+        case DealAnalyticsType.SHARE:
+          summary.shares = parseInt(item.count);
+          break;
+        case DealAnalyticsType.MONEY_SPENT:
+          summary.totalMoneySpent = parseFloat(item.totalAmount || 0);
+          break;
+      }
+    });
+
+    return summary;
   }
 }

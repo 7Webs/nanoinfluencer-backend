@@ -184,18 +184,13 @@ export class SubscriptionsService {
       const oldSubscription = await this.stripe.subscriptions.list({
         customer: customer.id,
       });
+      console.log(subscriptionPlan);
       const price = await this.stripe.prices.retrieve(
         subscriptionPlan.stripePriceId,
       );
+      console.log(price);
 
-      if (
-        oldSubscription.data.length > 0 &&
-        oldSubscription.data[0].items.data[0].price.id == price.id
-      ) {
-        return await this.stripe.billingPortal.sessions.create({
-          customer: customer.id,
-        });
-      } else {
+      if (oldSubscription.data.length > 0) {
         await this.stripe.subscriptions.cancel(oldSubscription.data[0].id);
       }
 
@@ -327,8 +322,9 @@ export class SubscriptionsService {
       shop.subscriptionState = SubscriptionState.active;
       shop.activeSubscriptionPlan = subscriptionPlan;
       shop.planActivatedAt = new Date(purchaseAt);
+      shop.subscriptionEndAt = new Date();
       shop.subscriptionEndAt = new Date(
-        shop.subscriptionEndAt.setFullYear(new Date().getFullYear() + 1),
+        shop.subscriptionEndAt.setMonth(new Date().getMonth() + 1),
       );
       shop.monthlyCollabs = subscriptionPlan.maxDeals;
       shop.remainingCollabs = subscriptionPlan.maxDeals;
@@ -431,7 +427,7 @@ export class SubscriptionsService {
     });
 
     const shop = await Shop.findOne({ where: { owner: { id: userId } } });
-    shop.subscriptionState = SubscriptionState.canceled;
+    // shop.subscriptionState = SubscriptionState.canceled;
     shop.activeSubscriptionPlan = null;
     shop.planActivatedAt = null;
     shop.subscriptionEndAt = null;

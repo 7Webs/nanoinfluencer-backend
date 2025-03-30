@@ -31,6 +31,7 @@ import { FirebaseUser } from '../../providers/firebase/firebase.service';
 import { AdminDealSearchDto } from './dto/AdminSearchDeal.dto';
 import { Pagination } from 'src/common/dtos/pagination.dto';
 import { Public } from '../user/decorator/public.decorator';
+import { TrackAnalyticsDto } from './dto/track-analytics.dto';
 
 @Controller('deals')
 @ApiTags('deals')
@@ -142,5 +143,21 @@ export class DealsController {
     @Query() query: AdminDealSearchDto,
   ): Promise<any> {
     return this.dealsService.getDealsByShop(shopId, query);
+  }
+
+  @Post('analytics/:id/')
+  @ApiOperation({ summary: 'Track deal analytics' })
+  trackAnalytics(
+    @Param('id') id: number,
+    @Body() trackAnalyticsDto: TrackAnalyticsDto,
+    @FUser() user: FirebaseUser,
+  ) {
+    return this.dealsService.trackAnalytics(id, trackAnalyticsDto, user.uid);
+  }
+
+  @Get('analytics/:id')
+  @ApiOperation({ summary: 'Get deal analytics' })
+  getDealAnalytics(@Param('id') id: number) {
+    return this.dealsService.getDealAnalytics(id);
   }
 }

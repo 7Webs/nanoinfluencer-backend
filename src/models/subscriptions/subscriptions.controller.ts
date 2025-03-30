@@ -123,7 +123,7 @@ export class SubscriptionsController {
     return this.subscriptionsService.getMySubscription(user?.uid);
   }
 
-  @Delete('/cancel-subscription')
+  @Post('/cancel-subscription')
   cancelSubscription(@FUser() user: FirebaseUser) {
     return this.subscriptionsService.cancelMySubscription(user?.uid);
   }

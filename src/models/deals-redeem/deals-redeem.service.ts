@@ -18,6 +18,10 @@ import { UploaderService } from 'src/providers/uploader/uploader.service';
 import { Shop } from '../shop/entities/shop.entity';
 import { In, Not } from 'typeorm';
 import { EmailService } from 'src/providers/email/email.service';
+import {
+  DealAnalytics,
+  DealAnalyticsType,
+} from '../deals/entities/deal-analytics.entity';
 
 @Injectable()
 export class DealsRedeemService {
@@ -255,6 +259,13 @@ export class DealsRedeemService {
       approvedAt: new Date(),
       approvedBy: { id: userId },
       approvedById: userId,
+    });
+
+    await DealAnalytics.save({
+      deal: { id: redeemedDeal.deal.id },
+      user: { id: redeemedDeal.user.id },
+      type: DealAnalyticsType.MONEY_SPENT,
+      amount: redeemedDeal.amountSpent,
     });
 
     await this.emailService.sendDealUpdateEmail(
