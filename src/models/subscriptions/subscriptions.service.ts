@@ -23,8 +23,15 @@ export class SubscriptionsService {
   }
 
   async create(createSubscriptionPlanDto: CreateSubscriptionPlanDto) {
-    const { name, amount, interval, description, trialDays, isActive } =
-      createSubscriptionPlanDto;
+    const {
+      name,
+      amount,
+      interval,
+      description,
+      trialDays,
+      isActive,
+      maxDeals,
+    } = createSubscriptionPlanDto;
 
     try {
       // Create a Stripe product
@@ -55,6 +62,7 @@ export class SubscriptionsService {
         currency: 'EUR',
         interval,
         description,
+        maxDeals: maxDeals || 1,
         isActive: isActive || false,
         trialDays: trialDays || 0,
       });
