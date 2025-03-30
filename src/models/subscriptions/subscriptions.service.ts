@@ -422,6 +422,16 @@ export class SubscriptionsService {
       cancel_at_period_end: true,
     });
 
+    const shop = await Shop.findOne({ where: { owner: { id: userId } } });
+    shop.subscriptionState = SubscriptionState.canceled;
+    shop.activeSubscriptionPlan = null;
+    shop.planActivatedAt = null;
+    shop.subscriptionEndAt = null;
+    shop.remainingCollabs = 0;
+    shop.monthlyCollabs = 0;
+
+    await Shop.save(shop);
+
     return { done: true };
   }
 
