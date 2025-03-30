@@ -8,15 +8,17 @@ import {
   Delete,
   Headers,
   Res,
+  Req,
 } from '@nestjs/common';
 import { SubscriptionsService } from './subscriptions.service';
 import { CreateSubscriptionPlanDto } from './dto/create-subscription-plan.dto';
 import { UpdateSubscriptionDto } from './dto/update-subscription.dto';
 import { FirebaseSecure } from '../user/decorator/firebase.secure.decorator';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiExcludeEndpoint, ApiTags } from '@nestjs/swagger';
 import { FUser } from '../user/decorator/firebase.user.decorator';
 import { Public } from '../user/decorator/public.decorator';
 import { ProvideSubscriptionDto } from './dto/provide-subscription.dto';
+import { FirebaseUser } from 'src/providers/firebase/firebase.service';
 
 @Controller('subscriptions')
 @FirebaseSecure()
@@ -65,11 +67,13 @@ export class SubscriptionsController {
   @Post('give-subscription')
   giveSubscription(@Body() giveSubscriptionDto: ProvideSubscriptionDto) {
     return this.subscriptionsService.giveSubscription(giveSubscriptionDto);
-    
   }
 
   @Post('add-collabs/:shopId/:noOfCollabs')
-  addCollabs(@Param('noOfCollabs') noOfCollabs: number, @Param('shopId') shopId: number) {
+  addCollabs(
+    @Param('noOfCollabs') noOfCollabs: number,
+    @Param('shopId') shopId: number,
+  ) {
     return this.subscriptionsService.addCollabs(noOfCollabs, shopId);
   }
 
@@ -87,12 +91,38 @@ export class SubscriptionsController {
     return res.redirect(`https://vendor.nanoinfluencers.io/profile`);
   }
 
-
   @Public()
   @Get('payment-failed')
   async paymentFail(@Res() res, @Headers('origin') origin: string) {
     // await this.subscriptionsService.paymentSuccess(checkoutSessionId);
 
     return res.redirect(`https://vendor.nanoinfluencers.io`);
+  }
+
+  @Public()
+  @ApiExcludeEndpoint()
+  @Post('webhook')
+  webhook(@Req() req, @Headers('stripe-signature') stripeSignature) {
+    return this.subscriptionsService.webhook(req.rawBody, stripeSignature);
+  }
+
+  @Post('sync-subscription')
+  syncSubscription(@FUser() user: FirebaseUser) {
+    return this.subscriptionsService.syncMySubscription(user?.uid);
+  }
+
+  @Get('my-subscription')
+  getMySubscription(@FUser() user: FirebaseUser) {
+    return this.subscriptionsService.getMySubscription(user?.uid);
+  }
+
+  @Delete('/cancel-subscription')
+  cancelSubscription(@FUser() user: FirebaseUser) {
+    return this.subscriptionsService.cancelMySubscription(user?.uid);
+  }
+
+  @Get('/customer-portal')
+  customerPortal(@FUser() user: FirebaseUser) {
+    return this.subscriptionsService.customerPortal(user?.uid);
   }
 }

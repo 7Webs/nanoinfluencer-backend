@@ -2,6 +2,7 @@ import {
   Injectable,
   BadRequestException,
   NotFoundException,
+  HttpException,
 } from '@nestjs/common';
 import { CreateSubscriptionPlanDto } from './dto/create-subscription-plan.dto';
 import { UpdateSubscriptionDto } from './dto/update-subscription.dto';
@@ -170,16 +171,31 @@ export class SubscriptionsService {
       if (!shop || !shop.approved) {
         throw new NotFoundException(`Shop with owner ID ${userId} not found`);
       }
+      const customer = await this.setupCustomer(user);
 
+      const oldSubscription = await this.stripe.subscriptions.list({
+        customer: customer.id,
+      });
       const price = await this.stripe.prices.retrieve(
         subscriptionPlan.stripePriceId,
       );
+
+      if (
+        oldSubscription.data.length > 0 &&
+        oldSubscription.data[0].items.data[0].price.id == price.id
+      ) {
+        return await this.stripe.billingPortal.sessions.create({
+          customer: customer.id,
+        });
+      } else {
+        await this.stripe.subscriptions.cancel(oldSubscription.data[0].id);
+      }
 
       const session = await this.stripe.checkout.sessions.create({
         line_items: [
           {
             price: price.id,
-            quantity: 12,
+            quantity: 1,
           },
         ],
         metadata: {
@@ -189,7 +205,7 @@ export class SubscriptionsService {
           purchaseAt: new Date().toISOString(),
           shopId: shop.id,
         },
-        customer_email: shop.owner.email || user.email,
+        customer: customer.id,
         mode: 'subscription',
         success_url: `https://${host}/subscriptions/payment-success/{CHECKOUT_SESSION_ID}`,
         cancel_url: `https://${host}/subscriptions/payment-failed`,
@@ -318,5 +334,104 @@ export class SubscriptionsService {
         `Error retrieving subscription plan: ${error.message}`,
       );
     }
+  }
+
+  /** get customer id from stripe  */
+  async setupCustomer(user: User) {
+    const users = await this.stripe.customers.list({
+      email: user.email,
+    });
+
+    if (users.data.length == 0) return this.createCustomer(user);
+
+    return users.data[0];
+  }
+
+  async createCustomer(user: User) {
+    const response = await this.stripe.customers.create({
+      email: user.email,
+      name: user.name,
+      phone: user.phone,
+    });
+
+    return response;
+  }
+
+  async syncSubscription(data) {
+    const customer = data.customer;
+    const status = data.status;
+    const customerData = (await this.stripe.customers.retrieve(
+      customer,
+    )) as Stripe.Customer;
+
+    const user = await User.findOne({
+      where: { email: customerData.email },
+    });
+
+    if (!user) return;
+
+    await Shop.update(
+      { owner: { id: user.id } },
+      { subscriptionState: status, },
+    );
+  }
+
+  async webhook(body: string, stripeSignature: any) {
+    const event = await this.stripe.webhooks.constructEventAsync(
+      body,
+      stripeSignature,
+      process.env.STRIPE_WEBHOOK_SECRET,
+    );
+
+    const data = event.data.object as any;
+
+    if (event.type.match(/customer\.subscription.*/)) {
+      this.syncSubscription(data);
+    }
+  }
+
+  async getMySubscription(userId: string) {
+    const user = await User.findOne({ where: { id: userId } });
+    const customer = await this.setupCustomer(user);
+
+    const data = await this.stripe.subscriptions.list({
+      customer: customer.id,
+    });
+
+    return data.data[0];
+  }
+
+  async cancelMySubscription(userId: string) {
+    const subscription = await this.getMySubscription(userId);
+
+    if (!subscription) throw new HttpException('No subscription found', 404);
+
+    await this.stripe.subscriptions.update(subscription.id, {
+      cancel_at_period_end: true,
+    });
+
+    return { done: true };
+  }
+
+  async customerPortal(userId: string) {
+    const user = await User.findOne({ where: { id: userId } });
+    const customer = await this.setupCustomer(user);
+
+    const data = await this.stripe.billingPortal.sessions.create({
+      customer: customer.id,
+    });
+
+    return data;
+  }
+
+  async syncMySubscription(id: string) {
+    const user = await User.findOne({ where: { id } });
+    const customer = await this.setupCustomer(user);
+
+    const subscription = await this.stripe.subscriptions.list({
+      customer: customer.id,
+    });
+
+    if (subscription.data.length === 0) return;
   }
 }
