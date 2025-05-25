@@ -13,6 +13,7 @@ import {
 } from '../deals-redeem/entities/deals-redeem.entity';
 import { EmailService } from 'src/providers/email/email.service';
 import { Deal } from '../deals/entities/deal.entity';
+import { In, Not } from 'typeorm';
 
 @Injectable()
 export class UserService {
@@ -49,7 +50,7 @@ export class UserService {
     const openRedeemedDeal = await RedeemedDeal.findOne({
       where: {
         user: { id: fUser.uid },
-        status: RedeemedDealStatus.PENDING_USAGE,
+        status: In([RedeemedDealStatus.PENDING_USAGE, RedeemedDealStatus.PENDING_APPROVAL, RedeemedDealStatus.RE_SUBMISSION_REQUESTED, RedeemedDealStatus.USED]),
       },
       relations: ['deal'],
       withDeleted: true,
