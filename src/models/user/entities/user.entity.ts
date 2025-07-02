@@ -21,6 +21,7 @@ import { NotificationToken } from 'src/providers/notification/entities/notificat
 import { Shop } from 'src/models/shop/entities/shop.entity';
 import { Category } from 'src/models/category/entities/category.entity';
 import { RedeemedDeal } from 'src/models/deals-redeem/entities/deals-redeem.entity';
+import { PointTransaction } from 'src/models/points/entities/point-transaction.entity';
 
 export enum UserRole {
   user = 'user',
@@ -135,9 +136,17 @@ export class User extends BaseEntity {
   redeemedDeals: RedeemedDeal[];
 
   @OneToMany(() => RedeemedDeal, (d) => d.user, {
-    onDelete: 'CASCADE',
+    cascade: true,
   })
   approvedDeals: RedeemedDeal[];
+
+  @OneToMany(() => PointTransaction, (pt) => pt.user, {
+    cascade: true,
+  })
+  pointTransactions: PointTransaction[];
+
+  @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
+  currentMonthPoints: number;
 
   @BeforeInsert()
   @BeforeUpdate()

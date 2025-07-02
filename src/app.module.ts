@@ -19,6 +19,8 @@ import { DealsModule } from './models/deals/deals.module';
 import { DealsRedeemModule } from './models/deals-redeem/deals-redeem.module';
 import { AnalyticsModule } from './analytics/analytics.module';
 import { AdminModule } from './admin/admin.module';
+import { PointsModule } from './models/points/points.module';
+import { RewardsModule } from './models/rewards/rewards.module';
 
 @Module({
   imports: [
@@ -47,6 +49,8 @@ import { AdminModule } from './admin/admin.module';
     DealsRedeemModule,
     AnalyticsModule,
     AdminModule,
+    PointsModule,
+    RewardsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -22,12 +22,14 @@ import {
   DealAnalytics,
   DealAnalyticsType,
 } from '../deals/entities/deal-analytics.entity';
+import { PointsService } from '../points/points.service';
 
 @Injectable()
 export class DealsRedeemService {
   constructor(
     private uploader: UploaderService,
     private emailService: EmailService,
+    private pointsService: PointsService,
   ) {}
   async checkIfRedeemable(dealId: number, userId: string) {
     const deal = await Deal.findOne({ where: { id: dealId } });
@@ -261,6 +263,21 @@ export class DealsRedeemService {
       approvedById: userId,
     });
 
+    const updatedRedeemedDeal = await RedeemedDeal.findOne({
+      where: { id: id },
+      relations: ['deal'],
+      withDeleted: true,
+    });
+
+    // Credit points for the approved collab
+    if (closeDealsRedeemBodyDto.status === RedeemedDealStatus.APPROVED) {
+      try {
+        await this.pointsService.creditCollabPoints(updatedRedeemedDeal);
+      } catch (error) {
+        console.error('Error crediting points for approved collab:', error);
+      }
+    }
+
     await DealAnalytics.save({
       deal: { id: redeemedDeal.deal.id },
       user: { id: redeemedDeal.user.id },
@@ -274,11 +291,7 @@ export class DealsRedeemService {
       closeDealsRedeemBodyDto.status,
     );
 
-    return await RedeemedDeal.findOne({
-      where: { id: id },
-      relations: ['deal'],
-      withDeleted: true,
-    });
+    return updatedRedeemedDeal;
   }
 
   async use(couponcode: string, userId: string) {
