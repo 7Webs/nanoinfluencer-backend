@@ -19,7 +19,7 @@ export class Reward extends BaseClassEntity {
   @Column({ type: 'enum', enum: RewardType, default: RewardType.OTHER })
   type: RewardType;
 
-  @Column({ type: 'number',nullable: true })
+  @Column({ type: 'number', precision: 10, scale: 0, nullable: true })
   value: number;
 
   @Column({ nullable: true })
